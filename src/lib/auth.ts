@@ -26,10 +26,6 @@ export const authOptions: AuthOptions = {
           throw new Error('No account found with this email');
         }
 
-        if (!user.isActive) {
-          throw new Error('This account is currently inactive');
-        }
-
         const isPasswordValid = await bcrypt.compare(credentials.password, user.passwordHash);
 
         if (!isPasswordValid) {
@@ -39,8 +35,6 @@ export const authOptions: AuthOptions = {
         return {
           id: user.id,
           email: user.email,
-          name: user.name,
-          role: user.role,
           candidateId: user.candidate?.id || null,
           referenceId: user.candidate?.referenceId || null,
         };
@@ -51,7 +45,6 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = user.role;
         token.candidateId = user.candidateId;
         token.referenceId = user.referenceId;
       }
@@ -62,7 +55,6 @@ export const authOptions: AuthOptions = {
         session.user = {
           ...session.user,
           id: token.id,
-          role: token.role,
           candidateId: token.candidateId,
           referenceId: token.referenceId,
         };
@@ -71,8 +63,8 @@ export const authOptions: AuthOptions = {
     },
   },
   pages: {
-    signIn: '/login',
-    error: '/login',
+    signIn: '/',
+    error: '/',
   },
   session: {
     strategy: 'jwt',

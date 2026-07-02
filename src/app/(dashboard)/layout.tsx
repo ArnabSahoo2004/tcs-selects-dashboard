@@ -1,44 +1,27 @@
-// src/app/(dashboard)/layout.tsx
-'use client';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
-import React, { useState } from 'react';
-import { Sidebar } from '@/components/layout/Sidebar/Sidebar';
-import { Topbar } from '@/components/layout/Topbar/Topbar';
-import { cn } from '@/lib/utils';
-import styles from './layout.module.css';
-
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect('/');
+  }
 
   return (
-    <div className={styles.layoutContainer}>
-      {/* Sidebar Wrapper */}
-      <div className={cn(styles.sidebarWrapper, isMobileMenuOpen && styles.mobileOpen)}>
-        <Sidebar />
-      </div>
-
-      {/* Overlay to close mobile sidebar drawer */}
-      {isMobileMenuOpen && (
-        <div
-          className={styles.mobileOverlay}
-          onClick={() => setIsMobileMenuOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* Main Content Area */}
-      <div className={styles.mainWrapper}>
-        <Topbar onMenuClick={() => setIsMobileMenuOpen(true)} />
-        <main className={styles.content}>
-          <div className={styles.container}>
-            {children}
-          </div>
-        </main>
-      </div>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f7f9fa', fontFamily: 'system-ui, sans-serif' }}>
+      <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid rgba(0,0,0,0.1)', background: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ fontWeight: 'bold', fontSize: '1.25rem' }}>Offer Tracker Dashboard</div>
+        <a href="/api/auth/signout" style={{ color: '#ef4444', textDecoration: 'none', fontWeight: 600 }}>Sign Out</a>
+      </header>
+      <main style={{ padding: '2rem 1.5rem', maxWidth: '800px', margin: '0 auto' }}>
+        {children}
+      </main>
     </div>
   );
 }
