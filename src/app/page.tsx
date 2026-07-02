@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 import { signIn } from 'next-auth/react';
+import Link from 'next/link';
 
 type CandidateResult = {
   id: string;
@@ -161,17 +162,22 @@ export default function Home() {
       <header className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.title}>Offer Tracker</div>
-          <button 
-            className={styles.loginBtn}
-            onClick={() => {
-              setIsLoginModalOpen(true);
-              setEmail('');
-              setPassword('');
-              setFormError('');
-            }}
-          >
-            Login
-          </button>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <Link href="/stats" style={{ color: '#4b5563', textDecoration: 'none', fontWeight: 600, fontSize: '0.875rem' }}>
+              Live Stats
+            </Link>
+            <button 
+              className={styles.loginBtn}
+              onClick={() => {
+                setIsLoginModalOpen(true);
+                setEmail('');
+                setPassword('');
+                setFormError('');
+              }}
+            >
+              Login
+            </button>
+          </div>
         </div>
       </header>
 
