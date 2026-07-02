@@ -1,325 +1,129 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import prisma from '@/lib/prisma';
 import styles from './page.module.css';
-import { signIn } from 'next-auth/react';
-import Link from 'next/link';
+import SearchAndClaim from '@/components/ui/SearchAndClaim/SearchAndClaim';
 
-type CandidateResult = {
-  id: string;
-  referenceId: string;
-  name: string;
-  selectedRole: string;
-  isClaimed: boolean;
-  maskedEmail: string | null;
-};
+export const revalidate = 60; // Revalidate stats every 60 seconds
 
-export default function Home() {
-  const router = useRouter();
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState<CandidateResult[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+export default async function Home() {
+  // Run all aggregations in parallel
+  const [
+    totalCandidates,
+    claimedProfiles,
+    offerLetters,
+    jrsAssigned,
+    joiningLetters,
+    primeRole,
+    digitalRole,
+    ninjaRole,
+    onCampus,
+    offCampus
+  ] = await Promise.all([
+    prisma.candidate.count(),
+    prisma.candidate.count({ where: { claimStatus: 'CLAIMED' } }),
+    prisma.candidate.count({ where: { offerLetterDate: { not: null } } }),
+    prisma.candidate.count({ where: { jrsDate: { not: null } } }),
+    prisma.candidate.count({ where: { joiningDate: { not: null } } }),
+    prisma.candidate.count({ where: { selectedRole: { equals: 'PRIME', mode: 'insensitive' } } }),
+    prisma.candidate.count({ where: { selectedRole: { equals: 'DIGITAL', mode: 'insensitive' } } }),
+    prisma.candidate.count({ where: { selectedRole: { equals: 'NINJA', mode: 'insensitive' } } }),
+    prisma.candidate.count({ where: { campusType: 'On Campus' } }),
+    prisma.candidate.count({ where: { campusType: 'Off Campus' } }),
+  ]);
 
-  // Modals
-  const [selectedCandidate, setSelectedCandidate] = useState<CandidateResult | null>(null);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-
-  // Claim/Login form
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [formLoading, setFormLoading] = useState(false);
-  const [formError, setFormError] = useState('');
-  const [formSuccess, setFormSuccess] = useState('');
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (query.trim().length >= 2) {
-        performSearch(query);
-      } else {
-        setResults([]);
-        setError('');
-      }
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [query]);
-
-  const performSearch = async (searchQuery: string) => {
-    setLoading(true);
-    setError('');
-
-    try {
-      const res = await fetch(`/api/candidates/claim?query=${encodeURIComponent(searchQuery)}`);
-      const data = await res.json();
-
-      if (data.success) {
-        setResults(data.candidates);
-      } else {
-        setResults([]);
-        setError(data.error || 'No candidates found.');
-      }
-    } catch {
-      setResults([]);
-      setError('An error occurred while searching.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim().length >= 2) {
-      performSearch(query);
-    }
-  };
-
-  const openClaimModal = (candidate: CandidateResult) => {
-    setSelectedCandidate(candidate);
-    setEmail('');
-    setPassword('');
-    setFormError('');
-    setFormSuccess('');
-  };
-
-  const handleClaimSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedCandidate) return;
-
-    setFormLoading(true);
-    setFormError('');
-
-    try {
-      const res = await fetch('/api/candidates/claim', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          referenceId: selectedCandidate.referenceId,
-          email,
-          password
-        }),
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        setFormSuccess('Account successfully claimed! Logging you in...');
-        
-        // Auto login
-        const signInResult = await signIn('credentials', {
-          redirect: false,
-          email,
-          password,
-        });
-
-        if (signInResult?.error) {
-          setFormError('Claimed, but auto-login failed. Please login manually.');
-        } else {
-          router.push('/dashboard');
-        }
-      } else {
-        setFormError(data.error || 'Failed to claim account.');
-      }
-    } catch {
-      setFormError('An error occurred.');
-    } finally {
-      setFormLoading(false);
-    }
-  };
-
-  const handleLoginSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormLoading(true);
-    setFormError('');
-
-    try {
-      const res = await signIn('credentials', {
-        redirect: false,
-        email,
-        password,
-      });
-
-      if (res?.error) {
-        setFormError('Invalid email or password');
-      } else {
-        router.push('/dashboard');
-      }
-    } catch {
-      setFormError('An error occurred during login.');
-    } finally {
-      setFormLoading(false);
-    }
-  };
-
-  const closeModals = () => {
-    setSelectedCandidate(null);
-    setIsLoginModalOpen(false);
-  };
+  const claimPercentage = totalCandidates > 0 ? Math.round((claimedProfiles / totalCandidates) * 100) : 0;
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <div className={styles.headerContent}>
-          <div className={styles.title}>Offer Tracker</div>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <Link href="/stats" style={{ color: '#4b5563', textDecoration: 'none', fontWeight: 600, fontSize: '0.875rem' }}>
-              Live Stats
-            </Link>
-            <button 
-              className={styles.loginBtn}
-              onClick={() => {
-                setIsLoginModalOpen(true);
-                setEmail('');
-                setPassword('');
-                setFormError('');
-              }}
-            >
-              Login
-            </button>
-          </div>
+          <div className={styles.title}>Offer Tracker Dashboard</div>
         </div>
       </header>
 
       <main className={styles.main}>
+        {/* Stats Section */}
         <div className={styles.hero}>
-          <h2>Find your Offer</h2>
-          <p>Search by your Name or CT/DT ID to claim your profile and update your tracking statuses.</p>
+          <h1 className={styles.heroTitle}>Public Tracker Stats</h1>
+          <p className={styles.heroSubtitle}>Live overview of offer rollouts and joining progress across all candidates.</p>
         </div>
 
-        <form className={styles.searchContainer} onSubmit={handleSearch}>
-          <input 
-            type="text" 
-            className={styles.searchInput} 
-            placeholder="Search name, CT/DT ID..." 
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </form>
-
-        {loading && <p>Searching...</p>}
-        {error && <p className={styles.error}>{error}</p>}
-
-        {results.length > 0 && (
-          <div className={styles.results}>
-            {results.map((candidate) => (
-              <div 
-                key={candidate.id} 
-                className={styles.resultItem}
-                onClick={() => openClaimModal(candidate)}
-              >
-                <div>
-                  <div className={styles.resultName}>{candidate.name}</div>
-                  <div className={styles.resultId}>{candidate.referenceId} &middot; {candidate.selectedRole}</div>
-                </div>
-                <div>
-                  {candidate.isClaimed ? (
-                    <span className={`${styles.badge} ${styles.badgeClaimed}`}>Claimed</span>
-                  ) : (
-                    <span className={`${styles.badge} ${styles.badgeUnclaimed}`}>Available</span>
-                  )}
-                </div>
-              </div>
-            ))}
+        <div className={styles.statsGrid}>
+          {/* Main Progress Cards */}
+          <div className={styles.statCard}>
+            <h3 className={styles.statTitle}>Total Candidates</h3>
+            <div className={styles.statValue}>{totalCandidates}</div>
           </div>
-        )}
+          
+          <div className={styles.statCard}>
+            <h3 className={styles.statTitle}>Profiles Claimed</h3>
+            <div className={styles.statValue}>{claimedProfiles}</div>
+            <div className={styles.statSubtext}>{claimPercentage}% Engagement</div>
+          </div>
+
+          <div className={styles.statCard}>
+            <h3 className={styles.statTitle}>Offer Letters Issued</h3>
+            <div className={styles.statValue}>{offerLetters}</div>
+          </div>
+
+          <div className={styles.statCard}>
+            <h3 className={styles.statTitle}>JRS Sessions Date</h3>
+            <div className={styles.statValue}>{jrsAssigned}</div>
+          </div>
+
+          <div className={styles.statCard}>
+            <h3 className={styles.statTitle}>Joining Letters Issued</h3>
+            <div className={styles.statValue}>{joiningLetters}</div>
+            <div className={styles.statSubtext}>Final Step</div>
+          </div>
+
+          <div className={styles.statCard}>
+            <h3 className={styles.statTitle}>BGC Started</h3>
+            <div className={styles.statValue}>{await prisma.candidate.count({ where: { bgcStarted: true } })}</div>
+          </div>
+        </div>
+
+        {/* Demographics */}
+        <div className={styles.sectionTitle}>Breakdowns</div>
+        
+        <div className={styles.breakdownGrid} style={{ marginBottom: '4rem' }}>
+          <div className={styles.breakdownCard}>
+            <h3>By Role</h3>
+            <div className={styles.breakdownRow}>
+              <span>Prime</span>
+              <strong>{primeRole}</strong>
+            </div>
+            <div className={styles.breakdownRow}>
+              <span>Digital</span>
+              <strong>{digitalRole}</strong>
+            </div>
+            <div className={styles.breakdownRow}>
+              <span>Ninja</span>
+              <strong>{ninjaRole}</strong>
+            </div>
+          </div>
+
+          <div className={styles.breakdownCard}>
+            <h3>By Campus Type</h3>
+            <div className={styles.breakdownRow}>
+              <span>On Campus</span>
+              <strong>{onCampus}</strong>
+            </div>
+            <div className={styles.breakdownRow}>
+              <span>Off Campus</span>
+              <strong>{offCampus}</strong>
+            </div>
+            <div className={styles.breakdownRow}>
+              <span style={{color: '#999'}}>Unspecified</span>
+              <strong style={{color: '#999'}}>{totalCandidates - onCampus - offCampus}</strong>
+            </div>
+          </div>
+        </div>
+
+        <hr style={{ width: '100%', border: 'none', borderTop: '1px solid rgba(0,0,0,0.1)', marginBottom: '4rem' }} />
+
+        {/* Client side search and claim section */}
+        <SearchAndClaim />
       </main>
-
-      {/* Claim / Dispute Modal */}
-      {selectedCandidate && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <button className={styles.closeBtn} onClick={closeModals}>&times;</button>
-            <h3 className={styles.modalTitle}>{selectedCandidate.name}</h3>
-            <p className={styles.modalDesc}>{selectedCandidate.referenceId} &middot; {selectedCandidate.selectedRole}</p>
-
-            {selectedCandidate.isClaimed ? (
-              <div>
-                <p style={{ marginBottom: '1rem', fontSize: '0.875rem', color: '#666' }}>
-                  This ID has already been claimed by <strong>{selectedCandidate.maskedEmail}</strong>.
-                </p>
-                <button 
-                  className={styles.submitBtn}
-                  onClick={() => {
-                    closeModals();
-                    setIsLoginModalOpen(true);
-                  }}
-                >
-                  Login to this account
-                </button>
-                <button className={styles.issueBtn} onClick={() => alert('Dispute flow coming soon')}>
-                  Raise an issue (Not me)
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleClaimSubmit}>
-                <p style={{ marginBottom: '1rem', fontSize: '0.875rem', color: '#666' }}>
-                  Set an email and password to claim this profile and update your statuses.
-                </p>
-                <div className={styles.formGroup}>
-                  <label>Email Address</label>
-                  <input 
-                    type="email" 
-                    required 
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div className={styles.formGroup}>
-                  <label>Create Password</label>
-                  <input 
-                    type="password" 
-                    required 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <button type="submit" className={styles.submitBtn} disabled={formLoading}>
-                  {formLoading ? 'Claiming...' : 'Claim Profile'}
-                </button>
-                {formError && <div className={styles.error}>{formError}</div>}
-                {formSuccess && <div className={styles.success}>{formSuccess}</div>}
-              </form>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Login Modal */}
-      {isLoginModalOpen && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <button className={styles.closeBtn} onClick={closeModals}>&times;</button>
-            <h3 className={styles.modalTitle}>Login</h3>
-            <p className={styles.modalDesc}>Login to update your offer statuses.</p>
-
-            <form onSubmit={handleLoginSubmit}>
-              <div className={styles.formGroup}>
-                <label>Email Address</label>
-                <input 
-                  type="email" 
-                  required 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label>Password</label>
-                <input 
-                  type="password" 
-                  required 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              <button type="submit" className={styles.submitBtn} disabled={formLoading}>
-                {formLoading ? 'Logging in...' : 'Login'}
-              </button>
-              {formError && <div className={styles.error}>{formError}</div>}
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
