@@ -5,9 +5,9 @@ import prisma from '@/lib/prisma';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { candidateId, claimantName, claimantEmail, reason } = body;
+    const { candidateId, claimantEmail, reason } = body;
 
-    if (!candidateId || !claimantName || !claimantEmail || !reason) {
+    if (!candidateId || !claimantEmail || !reason) {
       return NextResponse.json(
         { success: false, error: 'All fields are required' },
         { status: 400 }
@@ -33,7 +33,6 @@ export async function POST(request: Request) {
       const ticket = await tx.disputeTicket.create({
         data: {
           candidateId,
-          claimantName: claimantName.trim(),
           claimantEmail: trimmedEmail,
           reason: reason.trim(),
           status: 'OPEN',
@@ -46,23 +45,6 @@ export async function POST(request: Request) {
           claimStatus: 'DISPUTED',
         },
       });
-
-      // Find all Admins to notify
-      const admins = await tx.user.findMany({
-        where: { role: 'ADMIN' },
-      });
-
-      if (admins.length > 0) {
-        await tx.notification.createMany({
-          data: admins.map((admin) => ({
-            userId: admin.id,
-            title: 'New Dispute Raised',
-            message: `Claim conflict: ${claimantName} raised a dispute for Reference ID ${candidate.referenceId}.`,
-            type: 'SYSTEM',
-            actionUrl: `/settings/disputes`,
-          })),
-        });
-      }
 
       return ticket;
     });
