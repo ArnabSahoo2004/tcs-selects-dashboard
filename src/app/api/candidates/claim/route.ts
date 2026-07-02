@@ -28,8 +28,8 @@ export async function GET(request: Request) {
     const candidates = await prisma.candidate.findMany({
       where: {
         OR: [
-          { referenceId: query },
-          { name: { contains: query } }
+          { referenceId: { equals: query, mode: 'insensitive' } },
+          { name: { contains: query, mode: 'insensitive' } }
         ]
       },
       include: {
