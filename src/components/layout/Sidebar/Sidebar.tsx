@@ -8,11 +8,6 @@ import { signOut, useSession } from 'next-auth/react';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard,
-  Users,
-  Kanban,
-  FileCheck,
-  Megaphone,
-  BarChart3,
   Settings,
   LogOut,
   ChevronLeft,
