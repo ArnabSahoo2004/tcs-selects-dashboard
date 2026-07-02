@@ -230,7 +230,6 @@ export default function SearchAndClaim() {
         <button 
           className={styles.loginBtn}
           onClick={openLoginModal}
-          style={{ background: '#111', color: '#fff', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}
         >
           Login
         </button>
@@ -254,7 +253,7 @@ export default function SearchAndClaim() {
       <div style={{ textAlign: 'center', marginTop: '1rem' }}>
         <button 
           onClick={openOffCampusModal}
-          style={{ background: 'none', border: 'none', color: '#10b981', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.9rem' }}
+          style={{ background: 'none', border: 'none', color: '#477AC6', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.9rem' }}
         >
           Are you an off-campus hire? Click here to add your profile.
         </button>

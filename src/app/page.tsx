@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma';
 import styles from './page.module.css';
 import SearchAndClaim from '@/components/ui/SearchAndClaim/SearchAndClaim';
+import DashboardCharts from '@/components/ui/DashboardCharts/DashboardCharts';
 
 export const revalidate = 60; // Revalidate stats every 60 seconds
 
@@ -16,7 +17,8 @@ export default async function Home() {
     digitalRole,
     ninjaRole,
     onCampus,
-    offCampus
+    offCampus,
+    bgcStarted
   ] = await Promise.all([
     prisma.candidate.count(),
     prisma.candidate.count({ where: { claimStatus: 'CLAIMED' } }),
@@ -28,6 +30,7 @@ export default async function Home() {
     prisma.candidate.count({ where: { selectedRole: { equals: 'NINJA', mode: 'insensitive' } } }),
     prisma.candidate.count({ where: { campusType: 'On Campus' } }),
     prisma.candidate.count({ where: { campusType: 'Off Campus' } }),
+    prisma.candidate.count({ where: { bgcStarted: true } }),
   ]);
 
   const claimPercentage = totalCandidates > 0 ? Math.round((claimedProfiles / totalCandidates) * 100) : 0;
@@ -78,48 +81,27 @@ export default async function Home() {
 
           <div className={styles.statCard}>
             <h3 className={styles.statTitle}>BGC Started</h3>
-            <div className={styles.statValue}>{await prisma.candidate.count({ where: { bgcStarted: true } })}</div>
+            <div className={styles.statValue}>{bgcStarted}</div>
           </div>
         </div>
 
-        {/* Demographics */}
-        <div className={styles.sectionTitle}>Breakdowns</div>
-        
-        <div className={styles.breakdownGrid} style={{ marginBottom: '4rem' }}>
-          <div className={styles.breakdownCard}>
-            <h3>By Role</h3>
-            <div className={styles.breakdownRow}>
-              <span>Prime</span>
-              <strong>{primeRole}</strong>
-            </div>
-            <div className={styles.breakdownRow}>
-              <span>Digital</span>
-              <strong>{digitalRole}</strong>
-            </div>
-            <div className={styles.breakdownRow}>
-              <span>Ninja</span>
-              <strong>{ninjaRole}</strong>
-            </div>
-          </div>
+        {/* Demographics Charts */}
+        <div className={styles.sectionTitle}>Analytics</div>
+        <DashboardCharts stats={{
+          totalCandidates,
+          claimedProfiles,
+          offerLetters,
+          jrsAssigned,
+          joiningLetters,
+          primeRole,
+          digitalRole,
+          ninjaRole,
+          onCampus,
+          offCampus,
+          bgcStarted
+        }} />
 
-          <div className={styles.breakdownCard}>
-            <h3>By Campus Type</h3>
-            <div className={styles.breakdownRow}>
-              <span>On Campus</span>
-              <strong>{onCampus}</strong>
-            </div>
-            <div className={styles.breakdownRow}>
-              <span>Off Campus</span>
-              <strong>{offCampus}</strong>
-            </div>
-            <div className={styles.breakdownRow}>
-              <span style={{color: '#999'}}>Unspecified</span>
-              <strong style={{color: '#999'}}>{totalCandidates - onCampus - offCampus}</strong>
-            </div>
-          </div>
-        </div>
-
-        <hr style={{ width: '100%', border: 'none', borderTop: '1px solid rgba(0,0,0,0.1)', marginBottom: '4rem' }} />
+        <hr style={{ width: '100%', border: 'none', borderTop: '1px solid rgba(255,255,255,0.1)', marginBottom: '4rem', marginTop: '2rem' }} />
 
         {/* Client side search and claim section */}
         <SearchAndClaim />

@@ -1,40 +1,39 @@
 .container {
   min-height: 100vh;
-  background-color: #f7f9fa;
+  background-color: #0D0D0D;
   display: flex;
   flex-direction: column;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #FFFFFF;
 }
 
 .header {
+  background: #0D0D0D;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
   position: sticky;
   top: 0;
   z-index: 40;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
 }
 
 .headerContent {
-  margin: 0 auto;
   max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.5rem;
 }
 
 .title {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: #111;
-  letter-spacing: -0.02em;
+  color: #FFFFFF;
 }
 
 .loginBtn {
-  background-color: transparent;
-  color: #111;
-  border: 1px solid rgba(0,0,0,0.1);
+  background-color: #477AC6;
+  color: #FFFFFF;
+  border: none;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   font-weight: 600;
@@ -43,34 +42,136 @@
 }
 
 .loginBtn:hover {
-  background-color: rgba(0,0,0,0.05);
+  background-color: #5FA3EB;
 }
 
 .main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 4rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  width: 100%;
 }
 
 .hero {
-  text-align: center;
   margin-bottom: 3rem;
+  text-align: center;
 }
 
-.hero h2 {
+.heroTitle {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #111;
-  margin-bottom: 1rem;
+  color: #FFFFFF;
+  margin-bottom: 0.75rem;
   letter-spacing: -0.03em;
 }
 
-.hero p {
-  color: #666;
+.heroSubtitle {
+  color: #8D8D8D;
   font-size: 1.125rem;
   max-width: 600px;
+  margin: 0 auto;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+  width: 100%;
+}
+
+.statCard {
+  background: #003057;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(71, 122, 198, 0.2);
+  border-color: rgba(71, 122, 198, 0.4);
+}
+
+.statTitle {
+  color: #8D8D8D;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.statValue {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: -0.02em;
+}
+
+.statSubtext {
+  color: #477AC6;
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+  width: 100%;
+}
+
+.chartsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+  width: 100%;
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.chartCard, .chartCardFull {
+  background: #003057;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chartCardFull {
+  width: 100%;
+}
+
+.chartTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  text-align: left;
+}
+
+.chartSubtitle {
+  font-size: 0.875rem;
+  color: #8D8D8D;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 1rem;
 }
 
 .searchContainer {
@@ -78,39 +179,44 @@
   max-width: 600px;
   position: relative;
   margin-bottom: 2rem;
+  margin: 0 auto;
 }
 
 .searchInput {
   width: 100%;
   padding: 1rem 1.5rem;
   font-size: 1.125rem;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
-  background-color: #fff;
-  color: #111;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background-color: #121212;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   transition: all 0.2s;
+}
+
+.searchInput::placeholder {
+  color: #8D8D8D;
 }
 
 .searchInput:focus {
   outline: none;
-  border-color: #f97316;
-  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+  border-color: #477AC6;
+  box-shadow: 0 0 0 4px rgba(71, 122, 198, 0.2);
 }
 
 .results {
   width: 100%;
   max-width: 600px;
-  background: #fff;
+  background: #003057;
   border-radius: 12px;
-  border: 1px solid rgba(0,0,0,0.1);
+  border: 1px solid rgba(255,255,255,0.1);
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .resultItem {
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -123,17 +229,17 @@
 }
 
 .resultItem:hover {
-  background: rgba(0,0,0,0.02);
+  background: rgba(255,255,255,0.05);
 }
 
 .resultName {
   font-weight: 600;
-  color: #111;
+  color: #FFFFFF;
 }
 
 .resultId {
   font-size: 0.875rem;
-  color: #666;
+  color: #8D8D8D;
   margin-top: 0.25rem;
 }
 
@@ -146,19 +252,19 @@
 }
 
 .badgeUnclaimed {
-  background: rgba(34, 197, 94, 0.1);
-  color: #16a34a;
+  background: rgba(71, 122, 198, 0.2);
+  color: #5FA3EB;
 }
 
 .badgeClaimed {
-  background: rgba(0, 0, 0, 0.05);
-  color: #666;
+  background: rgba(255, 255, 255, 0.1);
+  color: #8D8D8D;
 }
 
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.7);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -168,24 +274,25 @@
 }
 
 .modal {
-  background: #fff;
+  background: #121212;
   border-radius: 16px;
   width: 100%;
   max-width: 400px;
   padding: 2rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
   position: relative;
+  border: 1px solid rgba(71, 122, 198, 0.3);
 }
 
 .modalTitle {
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  color: #111;
+  color: #FFFFFF;
 }
 
 .modalDesc {
-  color: #666;
+  color: #8D8D8D;
   margin-bottom: 1.5rem;
   font-size: 0.875rem;
 }
@@ -199,29 +306,29 @@
   font-size: 0.875rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #333;
+  color: #8D8D8D;
 }
 
 .formGroup input, .formGroup select {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid rgba(0,0,0,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
   border-radius: 8px;
-  background: #f9fafb;
-  color: #111;
+  background: #0D0D0D;
+  color: #FFFFFF;
 }
 
 .formGroup input:focus, .formGroup select:focus {
   outline: none;
-  border-color: #f97316;
-  background: #fff;
+  border-color: #477AC6;
+  background: #000;
 }
 
 .submitBtn {
   width: 100%;
   padding: 0.75rem;
-  background: #f97316;
-  color: #fff;
+  background: #477AC6;
+  color: #FFFFFF;
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -232,7 +339,7 @@
 }
 
 .submitBtn:hover {
-  background: #ea580c;
+  background: #5FA3EB;
 }
 
 .submitBtn:disabled {
@@ -240,28 +347,10 @@
   cursor: not-allowed;
 }
 
-.issueBtn {
-  width: 100%;
-  padding: 0.75rem;
-  background: transparent;
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.875rem;
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: all 0.2s;
-}
-
-.issueBtn:hover {
-  background: rgba(239, 68, 68, 0.05);
-}
-
 .closeBtn {
   background: transparent;
   border: none;
-  color: #999;
+  color: #8D8D8D;
   font-size: 1.5rem;
   cursor: pointer;
   position: absolute;
@@ -270,7 +359,7 @@
 }
 
 .closeBtn:hover {
-  color: #333;
+  color: #FFFFFF;
 }
 
 .error {
@@ -287,128 +376,15 @@
   text-align: center;
 }
 
-.heroTitle {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #111;
-  margin-bottom: 0.75rem;
-  letter-spacing: -0.03em;
-}
-
-.heroSubtitle {
-  color: #666;
-  font-size: 1.125rem;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 4rem;
-  width: 100%;
-}
-
-.statCard {
-  background: #fff;
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 16px;
-  padding: 1.75rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.statCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-}
-
-.statTitle {
-  color: #666;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.5rem;
-}
-
-.statValue {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #111;
-  letter-spacing: -0.02em;
-}
-
-.statSubtext {
-  color: #10b981;
-  font-weight: 600;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-}
-
-.sectionTitle {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #111;
-  margin-bottom: 1.5rem;
-  letter-spacing: -0.02em;
-  width: 100%;
-}
-
-.breakdownGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 1.5rem;
-  width: 100%;
-}
-
-.breakdownCard {
-  background: #fff;
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-}
-
-.breakdownCard h3 {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #111;
-  margin-bottom: 1.25rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-}
-
-.breakdownRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid rgba(0,0,0,0.03);
-}
-
-.breakdownRow:last-child {
-  border-bottom: none;
-}
-
-.breakdownRow span {
-  color: #4b5563;
-  font-weight: 500;
-}
-
-.breakdownRow strong {
-  color: #111;
-  font-weight: 700;
-  font-size: 1.125rem;
-}
-
 @media (max-width: 768px) {
   .heroTitle {
     font-size: 2rem;
   }
   .statsGrid {
     grid-template-columns: 1fr 1fr;
+  }
+  .chartsGrid {
+    grid-template-columns: 1fr;
   }
 }
 
