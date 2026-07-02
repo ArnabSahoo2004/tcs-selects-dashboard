@@ -1,0 +1,528 @@
+/* src/app/(dashboard)/checklist/Checklist.module.css */
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: 100%;
+}
+
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12) 0;
+  color: var(--color-text-secondary);
+  gap: var(--space-4);
+}
+
+.spinIcon {
+  animation: spin 1s linear infinite;
+  color: var(--color-accent-tcs-magenta);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Error States */
+.errorCard {
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.02);
+}
+
+.errorContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-8);
+  gap: var(--space-3);
+}
+
+.errorIcon {
+  color: #ef4444;
+}
+
+.errorContent h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.errorContent p {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+  max-width: 400px;
+}
+
+/* Candidate Onboarding View */
+.candidateContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.progressCard {
+  background: linear-gradient(135deg, rgba(20, 24, 46, 0.6) 0%, rgba(10, 14, 26, 0.7) 100%);
+  border: var(--glass-card-border);
+}
+
+.progressGrid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-8);
+  align-items: center;
+  padding: var(--space-6);
+}
+
+@media (max-width: 768px) {
+  .progressGrid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+.progressIntro h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.progressIntro p {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0 0 var(--space-6) 0;
+  max-width: 650px;
+}
+
+.progressStatsSummary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.progressMetric {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.progressMetric strong {
+  font-size: 1.1rem;
+  color: var(--color-text-primary);
+}
+
+.progressPercent {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-accent-tcs-magenta);
+}
+
+.pBar {
+  margin-top: var(--space-2);
+}
+
+.progressVisual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.visualRing {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--radius-full);
+  border: 4px solid rgba(255, 255, 255, 0.05);
+  border-top-color: var(--color-accent-tcs-magenta);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: 0 0 20px rgba(212, 15, 125, 0.15);
+}
+
+/* Document List styling */
+.documentsCard {
+  border: var(--glass-card-border);
+}
+
+.cardHeaderFlex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: var(--space-4) var(--space-6);
+}
+
+.cardHeaderMeta h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 4px 0;
+}
+
+.cardHeaderMeta p {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.documentList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+
+.documentRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+}
+
+.documentRow:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+  transform: translateX(4px);
+}
+
+.verifiedRow {
+  background: rgba(16, 185, 129, 0.02);
+  border-color: rgba(16, 185, 129, 0.15);
+}
+
+.verifiedRow:hover {
+  background: rgba(16, 185, 129, 0.03);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.rowIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.iconSuccess {
+  color: #10b981;
+}
+
+.iconPending {
+  color: var(--color-text-muted);
+}
+
+.rowMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.docName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.coordNotes {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  background: rgba(212, 15, 125, 0.03);
+  border-left: 2px solid var(--color-accent-tcs-magenta);
+  padding: 4px 8px;
+  margin: 4px 0 0 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.rowStatus {
+  display: flex;
+  align-items: center;
+}
+
+.rowAction {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 150px;
+}
+
+.verifiedText {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #10b981;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.emptyText {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  padding: var(--space-6) 0;
+}
+
+@media (max-width: 640px) {
+  .documentRow {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    text-align: center;
+  }
+  .rowIcon {
+    margin: 0 auto;
+  }
+  .rowStatus {
+    justify-content: center;
+  }
+  .rowAction {
+    justify-content: center;
+    width: 100%;
+  }
+  .coordNotes {
+    border-left: none;
+    border-top: 2px solid var(--color-accent-tcs-magenta);
+    padding: var(--space-2);
+  }
+}
+
+/* Coordinator View Styling */
+.coordinatorContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.filterCard {
+  border: var(--glass-card-border);
+}
+
+.filterBar {
+  padding: var(--space-4);
+}
+
+.searchWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.searchIcon {
+  position: absolute;
+  left: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.searchInput {
+  padding-left: var(--space-10) !important;
+  width: 100%;
+}
+
+.listCard {
+  border: var(--glass-card-border);
+}
+
+.listTitleMeta h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 4px 0;
+}
+
+.listTitleMeta p {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* Coordinator Candidate Row Table styling */
+.candidateRow {
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.candidateRow:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.activeRow {
+  background-color: rgba(212, 15, 125, 0.03) !important;
+  border-left: 2px solid var(--color-accent-tcs-magenta);
+}
+
+.expandBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.expansionRow {
+  background-color: rgba(10, 14, 26, 0.95);
+}
+
+.expansionCell {
+  padding: 0 !important;
+}
+
+.expandedPanel {
+  padding: var(--space-6) var(--space-8);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  animation: slideDown 0.25s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+  }
+}
+
+.panelLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-8) 0;
+  color: var(--color-text-secondary);
+}
+
+/* Expansion Verification Grid */
+.checklistVerifyGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.panelIntro h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.panelIntro p {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.panelSummaryStats {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.panelProgressBar {
+  max-width: 250px;
+  flex: 1;
+}
+
+.checklistEditorList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.editorRow {
+  display: grid;
+  grid-template-columns: 240px 200px 1fr auto;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition-fast);
+}
+
+.editorRow:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.editorDocLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.editorSelect {
+  width: 100%;
+}
+
+.editorNotesInput {
+  width: 100%;
+}
+
+.editorSaveBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+@media (max-width: 1024px) {
+  .editorRow {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+  .editorDocMeta {
+    grid-column: span 2;
+  }
+  .editorDocNotes {
+    grid-column: span 2;
+  }
+  .editorDocAction {
+    grid-column: span 2;
+    justify-content: flex-end;
+  }
+}
+
+.emptyCell {
+  padding: var(--space-12) 0 !important;
+  color: var(--color-text-muted);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pageIndicator {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}

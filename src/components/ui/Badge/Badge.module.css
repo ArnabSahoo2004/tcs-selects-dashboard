@@ -1,0 +1,71 @@
+/* src/components/ui/Badge/Badge.module.css */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-primary);
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.neutral {
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+
+.success {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.success.glow {
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+.warning {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.warning.glow {
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+}
+
+.error {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.error.glow {
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+.info {
+  background-color: var(--color-info-bg);
+  color: var(--color-info);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.info.glow {
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+}
+
+.pending {
+  background-color: var(--color-pending-bg);
+  color: var(--color-pending);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+.pending.glow {
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
+}

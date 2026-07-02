@@ -1,0 +1,86 @@
+/* src/components/layout/PageHeader/PageHeader.module.css */
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+  animation: fadeIn var(--transition-normal) forwards;
+}
+
+@media (min-width: 768px) {
+  .header {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+  font-weight: 700;
+  line-height: 1.25;
+  background: linear-gradient(135deg, var(--color-text-primary) 60%, var(--color-text-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.description {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  max-width: 600px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* Breadcrumb Styles */
+.breadcrumbNav {
+  margin-bottom: var(--space-1);
+}
+
+.breadcrumbList {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  list-style: none;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.breadcrumbItem {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-muted);
+}
+
+.breadcrumbLink {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.breadcrumbLink:hover {
+  color: var(--color-primary-400);
+}
+
+.breadcrumbCurrent {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.breadcrumbSeparator {
+  margin: 0 var(--space-2);
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}

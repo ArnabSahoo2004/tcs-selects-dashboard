@@ -1,0 +1,123 @@
+/* src/components/ui/Button/Button.module.css */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-primary);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative;
+  outline: none;
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(30, 85, 255, 0.4);
+}
+
+/* Sizes */
+.sm {
+  padding: 6px 12px;
+  font-size: 0.825rem;
+}
+
+.md {
+  padding: 10px 18px;
+  font-size: 0.875rem;
+}
+
+.lg {
+  padding: 12px 24px;
+  font-size: 1rem;
+}
+
+/* Variants */
+.primary {
+  background-color: var(--color-primary-500);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(30, 85, 255, 0.25);
+}
+
+.primary:hover:not(:disabled) {
+  background-color: var(--color-primary-400);
+  box-shadow: 0 4px 14px rgba(30, 85, 255, 0.4), var(--shadow-glow);
+}
+
+.secondary {
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: var(--color-bg-card-hover);
+  border-color: var(--color-border-hover);
+}
+
+.outline {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+.outline:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: var(--color-border-hover);
+}
+
+.ghost {
+  background-color: transparent;
+  color: var(--color-text-secondary);
+}
+
+.ghost:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.04);
+  color: var(--color-text-primary);
+}
+
+.danger {
+  background-color: var(--color-error);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25);
+}
+
+.danger:hover:not(:disabled) {
+  background-color: #f87171;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+}
+
+/* Loading Spinner */
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: currentColor;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+.hiddenContent {
+  opacity: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

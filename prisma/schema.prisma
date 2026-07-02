@@ -1,0 +1,335 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── USERS & AUTH ───────────────────────────────────────────
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  passwordHash    String
+  name            String
+  role            UserRole  @default(CANDIDATE)
+  isActive        Boolean   @default(true)
+  lastLoginAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  candidate       Candidate?
+  announcements   Announcement[]    @relation("AuthorAnnouncements")
+  notifications   Notification[]
+  auditLogs       AuditLog[]        @relation("AuditUser")
+  managedBatches  Batch[]           @relation("BatchCoordinator")
+
+  @@index([email])
+  @@index([role])
+}
+
+enum UserRole {
+  ADMIN
+  COORDINATOR
+  CANDIDATE
+}
+
+// ─── CANDIDATES ─────────────────────────────────────────────
+// Imported from CSV. userId is null until candidate claims their ID.
+
+model Candidate {
+  id              String          @id @default(cuid())
+  userId          String?         @unique   // null = UNCLAIMED, set when candidate registers
+  referenceId     String          @unique   // CT or DT ID from TCS (as-is from CSV)
+  name            String                    // From CSV
+  qualification   String                    // e.g., "BACHELOR OF TECHNOLOGY"
+  specialization  String                    // e.g., "COMPUTER SCIENCE AND ENGINEERING"
+  selectedRole    SelectedRole              // Digital / Ninja / Prime / Other
+  claimStatus     ClaimStatus     @default(UNCLAIMED)
+  currentStage    String?                   // Current milestone stage (references MilestoneDefinition)
+  overallStatus   CandidateStatus @default(ACTIVE)
+  joiningDate     DateTime?
+  remarks         String?
+  batchId         String?
+  ipaStatus       IpaStatus       @default(NOT_ATTEMPTED)
+  ipaAttempts     Int             @default(0)
+  ipaScore        Float?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  // Relations
+  user            User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  batch           Batch?          @relation(fields: [batchId], references: [id])
+  milestones      CandidateMilestone[]
+  checklistItems  DocumentChecklist[]
+  disputes        DisputeTicket[]
+
+  @@index([referenceId])
+  @@index([name])
+  @@index([selectedRole])
+  @@index([claimStatus])
+  @@index([overallStatus])
+  @@index([batchId])
+  @@index([ipaStatus])
+}
+
+enum SelectedRole {
+  DIGITAL
+  NINJA
+  PRIME
+  OTHER
+}
+
+enum IpaStatus {
+  NOT_ATTEMPTED
+  FAILED
+  CLEARED
+}
+
+enum ClaimStatus {
+  UNCLAIMED       // Imported from CSV, no one has registered yet
+  CLAIMED         // Candidate has registered and linked their account
+  DISPUTED        // Someone has raised a dispute on this ID
+}
+
+enum CandidateStatus {
+  ACTIVE
+  DEFERRED
+  WITHDRAWN
+  JOINED
+  NO_SHOW
+}
+
+// ─── DISPUTE TICKETS ────────────────────────────────────────
+// Created when someone tries to claim an already-claimed ID
+
+model DisputeTicket {
+  id              String          @id @default(cuid())
+  candidateId     String          // The candidate entry being disputed
+  claimantName    String          // Name of person filing the dispute
+  claimantEmail   String          // Email of person filing the dispute
+  reason          String          // Why they believe the ID is theirs
+  status          DisputeStatus   @default(OPEN)
+  adminNotes      String?         // Admin's resolution notes
+  resolvedBy      String?         // Admin user ID who resolved
+  resolvedAt      DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  // Relations
+  candidate       Candidate       @relation(fields: [candidateId], references: [id])
+
+  @@index([status])
+  @@index([candidateId])
+  @@index([createdAt])
+}
+
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED
+  REJECTED
+}
+
+// ─── MILESTONES ─────────────────────────────────────────────
+
+model MilestoneDefinition {
+  id              String          @id @default(cuid())
+  stage           String          @unique // e.g. "SELECTION_CONFIRMATION"
+  name            String
+  description     String?
+  displayOrder    Int
+  isRequired      Boolean         @default(true)
+  deadlineDays    Int?            // Days from selection to deadline
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  // Relations
+  candidateMilestones CandidateMilestone[]
+}
+
+model CandidateMilestone {
+  id              String          @id @default(cuid())
+  candidateId     String
+  milestoneId     String
+  status          MilestoneStatus @default(PENDING)
+  notes           String?
+  dueDate         DateTime?
+  completedAt     DateTime?
+  updatedBy       String?         // User ID of who updated
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  // Relations
+  candidate       Candidate       @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  milestone       MilestoneDefinition @relation(fields: [milestoneId], references: [id])
+  history         MilestoneHistory[]
+
+  @@unique([candidateId, milestoneId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+model MilestoneHistory {
+  id                    String          @id @default(cuid())
+  candidateMilestoneId  String
+  previousStatus        MilestoneStatus
+  newStatus             MilestoneStatus
+  notes                 String?
+  changedBy             String          // User ID
+  changedAt             DateTime        @default(now())
+
+  // Relations
+  candidateMilestone    CandidateMilestone @relation(fields: [candidateMilestoneId], references: [id], onDelete: Cascade)
+
+  @@index([candidateMilestoneId])
+  @@index([changedAt])
+}
+
+enum MilestoneStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  VERIFIED
+  FLAGGED
+  NOT_APPLICABLE
+  OVERDUE
+}
+
+// ─── DOCUMENT CHECKLIST (Status-Only, No File Storage) ─────
+
+model DocumentChecklist {
+  id              String              @id @default(cuid())
+  candidateId     String
+  type            DocumentType
+  status          ChecklistStatus     @default(NOT_SUBMITTED)
+  notes           String?
+  updatedBy       String?             // User ID of who updated
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  // Relations
+  candidate       Candidate           @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([candidateId, type])
+  @@index([candidateId])
+  @@index([status])
+}
+
+enum DocumentType {
+  MARKSHEET_10TH
+  MARKSHEET_12TH
+  DEGREE_CERTIFICATE
+  PROVISIONAL_CERTIFICATE
+  PASSPORT_PHOTO
+  OFFER_LETTER_ACKNOWLEDGMENT
+  MEDICAL_CERTIFICATE
+  OTHER
+}
+
+enum ChecklistStatus {
+  NOT_SUBMITTED
+  SUBMITTED
+  VERIFIED_BY_TCS
+}
+
+// ─── BATCHES ────────────────────────────────────────────────
+
+model Batch {
+  id              String    @id @default(cuid())
+  name            String    // e.g., "NQT Batch 2026 - June"
+  description     String?
+  coordinatorId   String
+  startDate       DateTime?
+  expectedJoiningDate DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  coordinator     User      @relation("BatchCoordinator", fields: [coordinatorId], references: [id])
+  candidates      Candidate[]
+
+  @@index([coordinatorId])
+}
+
+// ─── ANNOUNCEMENTS ──────────────────────────────────────────
+
+model Announcement {
+  id              String          @id @default(cuid())
+  title           String
+  content         String          // Markdown supported
+  priority        AnnouncementPriority @default(NORMAL)
+  targetRoles     String?         // Comma-separated roles, null = all
+  targetBatchId   String?         // null = all batches
+  authorId        String
+  isPinned        Boolean         @default(false)
+  publishedAt     DateTime        @default(now())
+  expiresAt       DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  // Relations
+  author          User            @relation("AuthorAnnouncements", fields: [authorId], references: [id])
+
+  @@index([publishedAt])
+  @@index([priority])
+}
+
+enum AnnouncementPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+// ─── NOTIFICATIONS ──────────────────────────────────────────
+
+model Notification {
+  id              String    @id @default(cuid())
+  userId          String
+  title           String
+  message         String
+  type            NotificationType
+  isRead          Boolean   @default(false)
+  actionUrl       String?   // Deep link to relevant page
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  MILESTONE_UPDATE
+  CHECKLIST_UPDATE
+  ANNOUNCEMENT
+  DEADLINE_REMINDER
+  SYSTEM
+}
+
+// ─── AUDIT LOG ──────────────────────────────────────────────
+
+model AuditLog {
+  id              String    @id @default(cuid())
+  userId          String
+  action          String    // e.g., "CANDIDATE_CREATED", "MILESTONE_UPDATED"
+  entityType      String    // e.g., "Candidate", "Document"
+  entityId        String
+  details         String?   // JSON string with change details
+  ipAddress       String?
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  user            User      @relation("AuditUser", fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}

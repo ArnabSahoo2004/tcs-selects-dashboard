@@ -1,0 +1,294 @@
+/* src/app/(auth)/register/Register.module.css */
+.header {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+  gap: var(--space-1);
+}
+
+.headerRow {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: var(--space-4);
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+}
+
+.backBtn {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.backBtn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-primary);
+}
+
+.headerDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.errorAlert {
+  padding: 10px 14px;
+  background-color: var(--color-error-bg);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  margin-bottom: var(--space-5);
+  animation: fadeIn var(--transition-fast) forwards;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.submitBtn {
+  width: 100%;
+  margin-top: var(--space-2);
+}
+
+.footerLink {
+  margin-top: var(--space-6);
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.loginLink {
+  color: var(--color-primary-400);
+  font-weight: 600;
+  transition: color var(--transition-fast);
+}
+
+.loginLink:hover {
+  color: var(--color-primary-300);
+  text-decoration: underline;
+}
+
+/* Wizard details & identity confirmation */
+.wizard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.identityCard {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+.metaLabel {
+  color: var(--color-text-muted);
+  font-family: var(--font-heading);
+}
+
+.metaValue {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.metaValueRole {
+  color: var(--color-primary-300);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+/* Already Claimed Warning box */
+.infoBox {
+  display: flex;
+  gap: var(--space-4);
+  background-color: rgba(245, 158, 11, 0.05);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.warningIcon {
+  color: var(--color-warning);
+  flex-shrink: 0;
+}
+
+.infoText {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.maskedEmailBlock {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-top: var(--space-2);
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  display: inline-block;
+}
+
+.actionColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.btnLinkSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary-500);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(30, 85, 255, 0.25);
+  text-align: center;
+  transition: background-color var(--transition-fast);
+}
+
+.btnLinkSecondary:hover {
+  background-color: var(--color-primary-400);
+  color: #ffffff;
+}
+
+.dividerRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  margin: var(--space-1) 0;
+}
+
+.disputeBtn {
+  width: 100%;
+}
+
+/* Dispute details Form */
+.miniLabel {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--color-border);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+
+.textareaWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.textareaLabel {
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.textarea {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  outline: none;
+  resize: vertical;
+}
+
+.textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.textarea:focus {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px rgba(30, 85, 255, 0.2), var(--shadow-glow);
+}
+
+/* Success page */
+.successScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-6) 0;
+  animation: fadeIn var(--transition-normal) forwards;
+}
+
+.successIcon {
+  color: var(--color-success);
+  margin-bottom: var(--space-4);
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.3));
+}
+
+.successHeading {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+}
+
+.successMessage {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--space-6);
+  max-width: 340px;
+}
+
+.backToLoginBtn {
+  width: 100%;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

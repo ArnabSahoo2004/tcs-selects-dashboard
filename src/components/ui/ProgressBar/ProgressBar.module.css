@@ -1,0 +1,64 @@
+/* src/components/ui/ProgressBar/ProgressBar.module.css */
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.track {
+  background-color: var(--color-border);
+  border-radius: var(--radius-full);
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.bar {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--transition-slow) ease-out;
+}
+
+/* Sizes */
+.sm {
+  height: 6px;
+}
+
+.md {
+  height: 10px;
+}
+
+.lg {
+  height: 14px;
+}
+
+/* Variants */
+.primary {
+  background-color: var(--color-primary-500);
+  box-shadow: 0 0 10px rgba(30, 85, 255, 0.3);
+}
+
+.success {
+  background-color: var(--color-success);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.warning {
+  background-color: var(--color-warning);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+.error {
+  background-color: var(--color-error);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+.valueText {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  min-width: 36px;
+  text-align: right;
+}
