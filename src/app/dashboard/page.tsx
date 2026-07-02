@@ -28,7 +28,7 @@ export default async function DashboardPage() {
   return (
     <div>
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem' }}>Welcome, {user.candidate.name}</h1>
+        <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem', color: '#111827' }}>Welcome, {user.candidate.name}</h1>
         <p style={{ color: '#666' }}>{user.candidate.referenceId} &middot; {user.candidate.selectedRole}</p>
       </div>
 
