@@ -40,7 +40,7 @@ export default function DashboardForm({ candidate }: { candidate: Record<string,
 
       <div style={{ marginBottom: '1.5rem' }}>
         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#333' }}>Campus Type</label>
-        <select name="campusType" defaultValue={candidate.campusType || ''} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', color: '#111', background: '#fff' }}>
+        <select name="campusType" defaultValue={(candidate.campusType as string) || ''} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', color: '#111', background: '#fff' }}>
           <option value="">Select Option</option>
           <option value="On Campus">On Campus</option>
           <option value="Off Campus">Off Campus</option>
