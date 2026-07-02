@@ -31,55 +31,20 @@ export const Sidebar: React.FC<SidebarProps> = () => {
   const { data: session } = useSession();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const role = session?.user?.role || 'CANDIDATE';
-
   const menuItems = [
     {
-      label: 'Overview',
-      href: '/overview',
+      label: 'Dashboard',
+      href: '/dashboard',
       icon: LayoutDashboard,
-      roles: ['ADMIN', 'COORDINATOR', 'CANDIDATE'],
-    },
-    {
-      label: 'Candidates',
-      href: '/candidates',
-      icon: Users,
-      roles: ['ADMIN', 'COORDINATOR'],
-    },
-    {
-      label: 'Milestones',
-      href: '/milestones',
-      icon: Kanban,
-      roles: ['ADMIN', 'COORDINATOR', 'CANDIDATE'],
-    },
-    {
-      label: 'Checklist',
-      href: '/checklist',
-      icon: FileCheck,
-      roles: ['ADMIN', 'COORDINATOR', 'CANDIDATE'],
-    },
-    {
-      label: 'Announcements',
-      href: '/announcements',
-      icon: Megaphone,
-      roles: ['ADMIN', 'COORDINATOR', 'CANDIDATE'],
-    },
-    {
-      label: 'Analytics',
-      href: '/analytics',
-      icon: BarChart3,
-      roles: ['ADMIN', 'COORDINATOR'],
     },
     {
       label: 'Settings',
       href: '/settings',
       icon: Settings,
-      roles: ['ADMIN', 'COORDINATOR', 'CANDIDATE'],
     },
   ];
 
-  // Filter items by role
-  const filteredItems = menuItems.filter((item) => item.roles.includes(role));
+  const filteredItems = menuItems;
 
   return (
     <aside className={cn(styles.sidebar, isCollapsed && styles.collapsed)}>
@@ -130,7 +95,7 @@ export const Sidebar: React.FC<SidebarProps> = () => {
           </div>
           <div className={cn(styles.profileDetails, isCollapsed && styles.hidden)}>
             <div className={styles.profileName}>{session?.user?.name || 'Guest'}</div>
-            <div className={styles.profileRole}>{role.toLowerCase()}</div>
+            <div className={styles.profileRole}>Candidate</div>
           </div>
         </div>
 

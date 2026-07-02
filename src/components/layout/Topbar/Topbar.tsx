@@ -197,7 +197,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
           <div className={styles.userMeta}>
             <div className={styles.userName}>{session?.user?.name || 'Guest'}</div>
             <div className={styles.userRole}>
-              {session?.user?.role?.toLowerCase() || 'candidate'}
+              Candidate
             </div>
           </div>
           <div className={styles.avatar}>
