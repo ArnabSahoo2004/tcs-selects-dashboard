@@ -4,8 +4,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Bell, Menu, User, CheckCheck, LogOut, Sun, Moon } from 'lucide-react';
-import { useTheme } from '@/context/ThemeContext';
+import { Bell, Menu, User, CheckCheck, LogOut } from 'lucide-react';
 import ThemeToggle from '@/components/ui/ThemeToggle/ThemeToggle';
 import styles from './Topbar.module.css';
 
@@ -39,7 +38,6 @@ function timeAgo(dateStr: string): string {
 export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
   const { data: session } = useSession();
   const router = useRouter();
-  const { theme, toggleTheme } = useTheme();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
