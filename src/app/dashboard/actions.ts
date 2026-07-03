@@ -27,6 +27,10 @@ export async function updateCandidateDetails(formData: FormData) {
   const joiningDateStr = formData.get('joiningDate') as string;
   const ilpAttempted = parseInt(formData.get('ilpAttempted') as string) || 0;
   const bgcStarted = formData.get('bgcStarted') === 'on';
+  const prefLocation1 = formData.get('prefLocation1') as string;
+  const prefLocation2 = formData.get('prefLocation2') as string;
+  const prefLocation3 = formData.get('prefLocation3') as string;
+  const assignedLocation = formData.get('assignedLocation') as string;
 
   const parseDate = (d: string) => d ? new Date(d) : null;
 
@@ -38,7 +42,11 @@ export async function updateCandidateDetails(formData: FormData) {
       jrsDate: parseDate(jrsDateStr),
       joiningDate: parseDate(joiningDateStr),
       ilpAttempted,
-      bgcStarted
+      bgcStarted,
+      prefLocation1,
+      prefLocation2,
+      prefLocation3,
+      assignedLocation
     }
   });
 

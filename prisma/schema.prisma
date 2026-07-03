@@ -30,6 +30,10 @@ model Candidate {
   joiningDate     DateTime?
   ilpAttempted    Int       @default(0)
   bgcStarted      Boolean   @default(false)
+  prefLocation1   String?
+  prefLocation2   String?
+  prefLocation3   String?
+  assignedLocation String?
   
   claimStatus     String    @default("UNCLAIMED") // UNCLAIMED, CLAIMED, DISPUTED
   user            User?     @relation(fields: [userId], references: [id])
