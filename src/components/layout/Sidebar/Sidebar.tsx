@@ -33,8 +33,8 @@ export const Sidebar: React.FC<SidebarProps> = () => {
       icon: LayoutDashboard,
     },
     {
-      label: 'Settings',
-      href: '/settings',
+      label: 'Update Status',
+      href: '/dashboard/update',
       icon: Settings,
     },
   ];
