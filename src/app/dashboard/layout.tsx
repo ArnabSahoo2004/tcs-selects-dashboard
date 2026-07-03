@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Sidebar } from '@/components/layout/Sidebar/Sidebar';
-import Topbar from '@/components/layout/Topbar/Topbar';
+import { Topbar } from '@/components/layout/Topbar/Topbar';
 import styles from './layout.module.css';
 
 export default async function DashboardLayout({
