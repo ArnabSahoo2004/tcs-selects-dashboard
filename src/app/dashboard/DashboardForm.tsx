@@ -3,7 +3,10 @@
 import { useState } from 'react';
 import { updateCandidateDetails } from './actions';
 
+import { useRouter } from 'next/navigation';
+
 export default function DashboardForm({ candidate }: { candidate: Record<string, unknown> }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -22,7 +25,10 @@ export default function DashboardForm({ candidate }: { candidate: Record<string,
     try {
       const formData = new FormData(e.currentTarget);
       await updateCandidateDetails(formData);
-      setMessage('Details updated successfully!');
+      setMessage('Details updated successfully! Redirecting...');
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 800);
     } catch {
       setMessage('Failed to update details.');
     } finally {
