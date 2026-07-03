@@ -58,9 +58,8 @@ export default async function Home() {
             <h3 className={styles.statTitle}>Total Candidates</h3>
             <div className={styles.statValueContainer}>
               <div className={styles.statValue}>{totalCandidates}</div>
-              <div className={styles.statTrend}>▲ 12%</div>
             </div>
-            <div className={styles.statSubtext}>Compared to 21,490 last year</div>
+            <div className={styles.statSubtext}>Across all campuses</div>
           </div>
           
           <div className={styles.statCard}>
@@ -76,16 +75,14 @@ export default async function Home() {
             <h3 className={styles.statTitle}>Offer Letters Issued</h3>
             <div className={styles.statValueContainer}>
               <div className={styles.statValue}>{offerLetters}</div>
-              <div className={styles.statTrend}>▲ 15%</div>
             </div>
-            <div className={styles.statSubtext}>Compared to last month</div>
+            <div className={styles.statSubtext}>Waiting for acceptance</div>
           </div>
 
           <div className={styles.statCard}>
             <h3 className={styles.statTitle}>JRS Sessions Assigned</h3>
             <div className={styles.statValueContainer}>
               <div className={styles.statValue}>{jrsAssigned}</div>
-              <div className={styles.statTrend}>▲ 5%</div>
             </div>
             <div className={styles.statSubtext}>Waiting for next batch</div>
           </div>
