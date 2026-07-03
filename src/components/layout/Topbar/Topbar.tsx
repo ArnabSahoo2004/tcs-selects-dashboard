@@ -6,6 +6,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Bell, Menu, User, CheckCheck, LogOut, Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import ThemeToggle from '@/components/ui/ThemeToggle/ThemeToggle';
 import styles from './Topbar.module.css';
 
 interface Notification {
@@ -135,14 +136,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
 
       <div className={styles.right}>
         {/* THEME SWITCHER */}
-        <button
-          className={styles.iconBtn}
-          aria-label="Toggle theme"
-          onClick={toggleTheme}
-          title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-        >
-          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-        </button>
+        <ThemeToggle />
 
         {/* NOTIFICATION BELL & DROPDOWN */}
         <div className={styles.notifWrapper} ref={dropdownRef}>
