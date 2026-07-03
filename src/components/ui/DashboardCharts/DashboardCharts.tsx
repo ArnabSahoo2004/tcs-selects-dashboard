@@ -14,6 +14,7 @@ import {
   Legend
 } from 'recharts';
 import styles from '@/app/page.module.css';
+import { useTheme } from '@/context/ThemeContext';
 
 type DashboardChartsProps = {
   stats: {
@@ -43,6 +44,8 @@ const COLORS = {
 };
 
 export default function DashboardCharts({ stats }: DashboardChartsProps) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   // Funnel Data
   const funnelData = [
     { name: 'Total Candidates', count: stats.totalCandidates },
@@ -69,14 +72,18 @@ export default function DashboardCharts({ stats }: DashboardChartsProps) {
   ].filter(d => d.value > 0);
   const CAMPUS_COLORS = [COLORS.indigo, COLORS.accent1, COLORS.gray];
 
-  // Custom tooltip style for Dark Mode
+  // Custom tooltip style for Light/Dark Mode
   const customTooltipStyle = {
-    backgroundColor: '#121212',
-    border: '1px solid #477AC6',
+    backgroundColor: isDark ? '#121212' : '#FFFFFF',
+    border: `1px solid ${COLORS.indigo}`,
     borderRadius: '8px',
-    color: '#fff',
+    color: isDark ? '#fff' : '#111',
     padding: '10px'
   };
+
+  const axisColor = isDark ? '#8D8D8D' : '#475569';
+  const gridColor = isDark ? '#333' : '#e2e8f0';
+  const legendColor = isDark ? '#fff' : '#0D0D0D';
 
   return (
     <div className={styles.chartsContainer}>
@@ -91,13 +98,13 @@ export default function DashboardCharts({ stats }: DashboardChartsProps) {
               data={funnelData}
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
-              <XAxis dataKey="name" stroke="#8D8D8D" tick={{ fill: '#8D8D8D' }} />
-              <YAxis stroke="#8D8D8D" tick={{ fill: '#8D8D8D' }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+              <XAxis dataKey="name" stroke={axisColor} tick={{ fill: axisColor }} />
+              <YAxis stroke={axisColor} tick={{ fill: axisColor }} />
               <Tooltip 
                 contentStyle={customTooltipStyle} 
                 itemStyle={{ color: COLORS.accent2 }}
-                cursor={{ fill: '#ffffff0a' }}
+                cursor={{ fill: isDark ? '#ffffff0a' : '#0000000a' }}
               />
               <Bar 
                 dataKey="count" 
@@ -131,8 +138,8 @@ export default function DashboardCharts({ stats }: DashboardChartsProps) {
                     <Cell key={`cell-${index}`} fill={ROLE_COLORS[index % ROLE_COLORS.length]} stroke="rgba(0,0,0,0)" />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={customTooltipStyle} itemStyle={{ color: '#fff' }} />
-                <Legend wrapperStyle={{ color: '#fff', paddingTop: '20px' }} />
+                <Tooltip contentStyle={customTooltipStyle} itemStyle={{ color: legendColor }} />
+                <Legend wrapperStyle={{ color: legendColor, paddingTop: '20px' }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -156,8 +163,8 @@ export default function DashboardCharts({ stats }: DashboardChartsProps) {
                     <Cell key={`cell-${index}`} fill={CAMPUS_COLORS[index % CAMPUS_COLORS.length]} stroke="rgba(0,0,0,0)" />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={customTooltipStyle} itemStyle={{ color: '#fff' }} />
-                <Legend wrapperStyle={{ color: '#fff', paddingTop: '20px' }} />
+                <Tooltip contentStyle={customTooltipStyle} itemStyle={{ color: legendColor }} />
+                <Legend wrapperStyle={{ color: legendColor, paddingTop: '20px' }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
