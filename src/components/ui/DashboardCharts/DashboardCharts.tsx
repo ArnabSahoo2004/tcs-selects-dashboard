@@ -37,9 +37,9 @@ const COLORS = {
   navy: '#003057',
   gray: '#8D8D8D',
   white: '#FFFFFF',
-  accent1: '#1E4A8E',
-  accent2: '#5FA3EB',
-  accent3: '#183866',
+  accent1: '#5FA3EB', // Light Blue
+  accent2: '#477AC6', // Indigo
+  accent3: '#93C5FD', // Very Light Blue
 };
 
 export default function DashboardCharts({ stats }: DashboardChartsProps) {
