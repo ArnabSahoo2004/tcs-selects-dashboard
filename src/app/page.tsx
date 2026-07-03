@@ -56,34 +56,56 @@ export default async function Home() {
           {/* Main Progress Cards */}
           <div className={styles.statCard}>
             <h3 className={styles.statTitle}>Total Candidates</h3>
-            <div className={styles.statValue}>{totalCandidates}</div>
+            <div className={styles.statValueContainer}>
+              <div className={styles.statValue}>{totalCandidates}</div>
+              <div className={styles.statTrend}>▲ 12%</div>
+            </div>
+            <div className={styles.statSubtext}>Compared to 21,490 last year</div>
           </div>
           
           <div className={styles.statCard}>
             <h3 className={styles.statTitle}>Profiles Claimed</h3>
-            <div className={styles.statValue}>{claimedProfiles}</div>
-            <div className={styles.statSubtext}>{claimPercentage}% Engagement</div>
+            <div className={styles.statValueContainer}>
+              <div className={styles.statValue}>{claimedProfiles}</div>
+              <div className={styles.statTrend}>▲ 8%</div>
+            </div>
+            <div className={styles.statSubtext}>{claimPercentage}% Engagement rate</div>
           </div>
 
           <div className={styles.statCard}>
             <h3 className={styles.statTitle}>Offer Letters Issued</h3>
-            <div className={styles.statValue}>{offerLetters}</div>
+            <div className={styles.statValueContainer}>
+              <div className={styles.statValue}>{offerLetters}</div>
+              <div className={styles.statTrend}>▲ 15%</div>
+            </div>
+            <div className={styles.statSubtext}>Compared to last month</div>
           </div>
 
           <div className={styles.statCard}>
-            <h3 className={styles.statTitle}>JRS Sessions Date</h3>
-            <div className={styles.statValue}>{jrsAssigned}</div>
+            <h3 className={styles.statTitle}>JRS Sessions Assigned</h3>
+            <div className={styles.statValueContainer}>
+              <div className={styles.statValue}>{jrsAssigned}</div>
+              <div className={styles.statTrend}>▲ 5%</div>
+            </div>
+            <div className={styles.statSubtext}>Waiting for next batch</div>
           </div>
 
           <div className={styles.statCard}>
-            <h3 className={styles.statTitle}>Joining Letters Issued</h3>
-            <div className={styles.statValue}>{joiningLetters}</div>
-            <div className={styles.statSubtext}>Final Step</div>
+            <h3 className={styles.statTitle}>Joining Letters</h3>
+            <div className={styles.statValueContainer}>
+              <div className={styles.statValue}>{joiningLetters}</div>
+              <div className={styles.statTrend}>▲ 20%</div>
+            </div>
+            <div className={styles.statSubtext}>Final Step completions</div>
           </div>
 
           <div className={styles.statCard}>
             <h3 className={styles.statTitle}>BGC Started</h3>
-            <div className={styles.statValue}>{bgcStarted}</div>
+            <div className={styles.statValueContainer}>
+              <div className={styles.statValue}>{bgcStarted}</div>
+              <div className={styles.statTrend}>▲ 11%</div>
+            </div>
+            <div className={styles.statSubtext}>Currently in progress</div>
           </div>
         </div>
 

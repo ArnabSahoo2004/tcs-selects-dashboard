@@ -98,26 +98,38 @@
 }
 
 .statTitle {
-  color: var(--tcs-text-secondary);
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: var(--tcs-text);
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+
+.statValueContainer {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
   margin-bottom: 0.5rem;
 }
 
 .statValue {
-  font-size: 2.5rem;
-  font-weight: 800;
+  font-size: 2.75rem;
+  font-weight: 700;
   color: var(--tcs-text);
   letter-spacing: -0.02em;
 }
 
-.statSubtext {
-  color: #477AC6;
+.statTrend {
+  font-size: 1rem;
   font-weight: 600;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
+  color: #4ade80; /* bright green for upward trend */
+  display: flex;
+  align-items: center;
+}
+
+.statSubtext {
+  color: var(--tcs-text-secondary);
+  font-weight: 400;
+  font-size: 0.95rem;
 }
 
 .sectionTitle {
