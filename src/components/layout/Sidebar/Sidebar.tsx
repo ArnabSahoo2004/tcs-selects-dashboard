@@ -44,12 +44,12 @@ export const Sidebar: React.FC<SidebarProps> = () => {
   return (
     <aside className={cn(styles.sidebar, isCollapsed && styles.collapsed)}>
       <div className={styles.header}>
-        <div className={styles.logoContainer}>
+        <Link href="/dashboard" className={styles.logoContainer} style={{ textDecoration: 'none' }}>
           <span className={styles.logoIcon}>T</span>
           <span className={cn(styles.logoText, isCollapsed && styles.hidden)}>
             TCS Selects
           </span>
-        </div>
+        </Link>
         <button
           className={styles.toggleBtn}
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -62,7 +62,7 @@ export const Sidebar: React.FC<SidebarProps> = () => {
       <nav className={styles.nav}>
         <ul className={styles.list}>
           {filteredItems.map((item) => {
-            const isActive = pathname.startsWith(item.href);
+            const isActive = item.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(item.href);
             const Icon = item.icon;
 
             return (

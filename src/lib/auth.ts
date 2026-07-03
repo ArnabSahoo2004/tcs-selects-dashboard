@@ -35,6 +35,7 @@ export const authOptions: AuthOptions = {
         return {
           id: user.id,
           email: user.email,
+          name: user.candidate?.name || 'Candidate',
           candidateId: user.candidate?.id || null,
           referenceId: user.candidate?.referenceId || null,
         };
