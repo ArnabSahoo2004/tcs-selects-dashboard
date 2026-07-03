@@ -1,6 +1,9 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { Sidebar } from '@/components/layout/Sidebar/Sidebar';
+import Topbar from '@/components/layout/Topbar/Topbar';
+import styles from './layout.module.css';
 
 export default async function DashboardLayout({
   children,
@@ -10,18 +13,22 @@ export default async function DashboardLayout({
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect('/');
+    redirect('/login');
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f7f9fa', fontFamily: 'system-ui, sans-serif' }}>
-      <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid rgba(0,0,0,0.1)', background: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ fontWeight: 'bold', fontSize: '1.25rem', color: '#111827' }}>Offer Tracker Dashboard</div>
-        <a href="/api/auth/signout" style={{ color: '#ef4444', textDecoration: 'none', fontWeight: 600 }}>Sign Out</a>
-      </header>
-      <main style={{ padding: '2rem 1.5rem', maxWidth: '800px', margin: '0 auto' }}>
-        {children}
-      </main>
+    <div className={styles.layoutContainer}>
+      <div className={styles.sidebarWrapper}>
+        <Sidebar />
+      </div>
+      <div className={styles.mainWrapper}>
+        <Topbar />
+        <main className={styles.content}>
+          <div className={styles.container}>
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
