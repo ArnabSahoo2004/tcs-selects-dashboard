@@ -73,6 +73,9 @@ function ReceivedField({
   hasValue,
   defaultDate,
   hint,
+  yesLabel,
+  noLabel,
+  dateLabel,
   onChange,
 }: {
   label: string;
