@@ -7,7 +7,7 @@ import { Card, CardHeader, CardContent } from '@/components/ui/Card/Card';
 import { Input } from '@/components/ui/Input/Input';
 import { Button } from '@/components/ui/Button/Button';
 import Link from 'next/link';
-import { Search, ShieldAlert, ArrowLeft, CheckCircle2, Ticket } from 'lucide-react';
+import { ShieldAlert, ArrowLeft, CheckCircle2, Ticket } from 'lucide-react';
 import styles from './Register.module.css';
 
 type RegisterStep = 'SEARCH' | 'VERIFY_AND_CLAIM' | 'OTP_VERIFICATION' | 'ALREADY_CLAIMED' | 'DISPUTE' | 'SUCCESS';
