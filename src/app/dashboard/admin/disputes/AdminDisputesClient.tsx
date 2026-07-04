@@ -58,27 +58,27 @@ export default function AdminDisputesClient({ initialDisputes }: { initialDisput
       {disputes.length === 0 ? (
         <p style={{ color: 'var(--tcs-text-secondary)' }}>No open disputes found.</p>
       ) : (
-        <div className={styles.tableContainer}>
+        <div className={styles.container}>
           <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Candidate ID</th>
-                <th>Name</th>
-                <th>Claimant Email</th>
-                <th>Reason</th>
-                <th>Actions</th>
+            <thead className={styles.thead}>
+              <tr className={styles.tr}>
+                <th className={styles.th}>Candidate ID</th>
+                <th className={styles.th}>Name</th>
+                <th className={styles.th}>Claimant Email</th>
+                <th className={styles.th}>Reason</th>
+                <th className={styles.th}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {disputes.map((dispute) => (
-                <tr key={dispute.id}>
-                  <td>{dispute.candidateRefId}</td>
-                  <td>{dispute.candidateName}</td>
-                  <td>{dispute.claimantEmail}</td>
-                  <td style={{ maxWidth: '300px', whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                <tr key={dispute.id} className={styles.tr}>
+                  <td className={styles.td}>{dispute.candidateRefId}</td>
+                  <td className={styles.td}>{dispute.candidateName}</td>
+                  <td className={styles.td}>{dispute.claimantEmail}</td>
+                  <td className={styles.td} style={{ maxWidth: '300px', whiteSpace: 'normal', wordWrap: 'break-word' }}>
                     {dispute.reason}
                   </td>
-                  <td>
+                  <td className={styles.td}>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       <button
                         onClick={() => handleResolve(dispute.id, 'APPROVE')}

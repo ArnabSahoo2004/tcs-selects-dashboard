@@ -36,27 +36,27 @@ export default async function AdminClaimsPage() {
       {candidates.length === 0 ? (
         <p style={{ color: 'var(--tcs-text-secondary)' }}>No profiles have been claimed yet.</p>
       ) : (
-        <div className={styles.tableContainer}>
+        <div className={styles.container}>
           <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Candidate ID</th>
-                <th>Name</th>
-                <th>Role</th>
-                <th>Claimed By (Email)</th>
-                <th>Status</th>
+            <thead className={styles.thead}>
+              <tr className={styles.tr}>
+                <th className={styles.th}>Candidate ID</th>
+                <th className={styles.th}>Name</th>
+                <th className={styles.th}>Role</th>
+                <th className={styles.th}>Claimed By (Email)</th>
+                <th className={styles.th}>Status</th>
               </tr>
             </thead>
             <tbody>
               {candidates.map((candidate) => (
-                <tr key={candidate.id}>
-                  <td><strong>{candidate.referenceId}</strong></td>
-                  <td>{candidate.name}</td>
-                  <td>{candidate.selectedRole}</td>
-                  <td style={{ color: candidate.user?.email ? 'inherit' : 'var(--tcs-text-secondary)' }}>
+                <tr key={candidate.id} className={styles.tr}>
+                  <td className={styles.td}><strong>{candidate.referenceId}</strong></td>
+                  <td className={styles.td}>{candidate.name}</td>
+                  <td className={styles.td}>{candidate.selectedRole}</td>
+                  <td className={styles.td} style={{ color: candidate.user?.email ? 'inherit' : 'var(--tcs-text-secondary)' }}>
                     {candidate.user?.email || 'N/A (Unlinked)'}
                   </td>
-                  <td>
+                  <td className={styles.td}>
                     <span
                       style={{
                         padding: '0.25rem 0.75rem',
