@@ -306,7 +306,10 @@ export default function RegisterPage() {
                     <div 
                       key={res.id} 
                       className={styles.dropdownItem}
-                      onClick={() => handleSelectCandidate(res)}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        handleSelectCandidate(res);
+                      }}
                     >
                       <span className={styles.candidateName}>{res.name}</span>
                       <span className={styles.candidateId}>{res.referenceId}</span>
