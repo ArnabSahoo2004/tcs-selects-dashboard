@@ -80,6 +80,9 @@ function ReceivedField({
   hasValue: boolean;
   defaultDate: string;
   hint?: string;
+  yesLabel?: string;
+  noLabel?: string;
+  dateLabel?: string;
   onChange?: (received: boolean) => void;
 }) {
   const [received, setReceived] = useState(hasValue);
@@ -99,8 +102,8 @@ function ReceivedField({
         onChange={(e) => handleChange(e.target.value)}
         name={`${name}_status`}
       >
-        <option value="no">Not Received</option>
-        <option value="yes">Received</option>
+        <option value="no">{noLabel || 'Not Received'}</option>
+        <option value="yes">{yesLabel || 'Received'}</option>
       </select>
       {hint && <p style={hintStyle}>{hint}</p>}
       {/* Hidden date — sent to server; pre-filled if already set or set to today when toggled on */}
@@ -111,7 +114,7 @@ function ReceivedField({
       />
       {received && (
         <div style={{ marginTop: '0.75rem' }}>
-          <label style={{ ...labelStyle, fontSize: '0.85rem' }}>Date received (optional)</label>
+          <label style={{ ...labelStyle, fontSize: '0.85rem' }}>{dateLabel || 'Date received (optional)'}</label>
           <input type="date" name={`${name}_display`} defaultValue={defaultDate} style={dateStyle} disabled />
         </div>
       )}
@@ -186,6 +189,9 @@ export default function DashboardForm({ candidate }: { candidate: Record<string,
         hasValue={!!candidate.jrsDate}
         defaultDate={formatDate(candidate.jrsDate as Date)}
         hint="Have you submitted your JRS (Job Readiness Survey) form?"
+        yesLabel="Submitted"
+        noLabel="Not Submitted"
+        dateLabel="Date submitted (optional)"
       />
 
       {/* Joining Letter */}
