@@ -17,6 +17,7 @@ import {
   BarChart2,
   ExternalLink,
   Shield,
+  Users,
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -48,6 +49,11 @@ export const Sidebar: React.FC<SidebarProps> = () => {
       label: 'Admin Disputes',
       href: '/dashboard/admin/disputes',
       icon: Shield,
+    });
+    menuItems.push({
+      label: 'All Claims',
+      href: '/dashboard/admin/claims',
+      icon: Users,
     });
   }
 
