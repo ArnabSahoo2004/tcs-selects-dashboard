@@ -38,6 +38,10 @@ export default function SearchAndClaim() {
   const [ocRefId, setOcRefId] = useState('');
   const [ocRole, setOcRole] = useState('NINJA');
 
+  // Dispute form
+  const [isFilingDispute, setIsFilingDispute] = useState(false);
+  const [disputeReason, setDisputeReason] = useState('');
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (query.trim().length >= 2) {
@@ -86,6 +90,8 @@ export default function SearchAndClaim() {
     setPassword('');
     setFormError('');
     setFormSuccess('');
+    setIsFilingDispute(false);
+    setDisputeReason('');
   };
 
 
@@ -215,6 +221,42 @@ export default function SearchAndClaim() {
     setSelectedCandidate(null);
     setIsLoginModalOpen(false);
     setIsOffCampusModalOpen(false);
+    setIsFilingDispute(false);
+    setDisputeReason('');
+  };
+
+  const handleDisputeSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedCandidate) return;
+
+    setFormLoading(true);
+    setFormError('');
+    setFormSuccess('');
+
+    try {
+      const res = await fetch('/api/candidates/claim/dispute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          candidateId: selectedCandidate.id,
+          claimantEmail: email,
+          reason: disputeReason
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setFormSuccess('Dispute raised successfully. An admin will review it.');
+        setIsFilingDispute(false);
+      } else {
+        setFormError(data.error || 'Failed to raise dispute.');
+      }
+    } catch {
+      setFormError('An error occurred while raising the dispute.');
+    } finally {
+      setFormLoading(false);
+    }
   };
 
   return (
@@ -280,20 +322,88 @@ export default function SearchAndClaim() {
             <p className={styles.modalDesc}>{selectedCandidate.referenceId} &middot; {selectedCandidate.selectedRole}</p>
 
             {selectedCandidate.isClaimed ? (
-              <div>
-                <p style={{ marginBottom: '1rem', fontSize: '0.875rem', color: '#666' }}>
-                  This ID has already been claimed by <strong>{selectedCandidate.maskedEmail}</strong>.
-                </p>
-                <button 
-                  className={styles.submitBtn}
-                  onClick={() => {
-                    closeModals();
-                    router.push('/login');
-                  }}
-                >
-                  Login to this account
-                </button>
-              </div>
+              !isFilingDispute ? (
+                <div>
+                  <p style={{ marginBottom: '1rem', fontSize: '0.875rem', color: '#666' }}>
+                    This ID has already been claimed by <strong>{selectedCandidate.maskedEmail}</strong>.
+                  </p>
+                  <button 
+                    className={styles.submitBtn}
+                    onClick={() => {
+                      closeModals();
+                      router.push('/login');
+                    }}
+                  >
+                    Login to this account
+                  </button>
+                  <button 
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--tcs-primary)',
+                      marginTop: '1rem',
+                      cursor: 'pointer',
+                      fontSize: '0.875rem',
+                      textDecoration: 'underline',
+                      width: '100%',
+                      textAlign: 'center'
+                    }}
+                    onClick={() => setIsFilingDispute(true)}
+                  >
+                    Not your email? File a Dispute
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleDisputeSubmit}>
+                  <p style={{ marginBottom: '1rem', fontSize: '0.875rem', color: '#666' }}>
+                    File a dispute if you believe this CT/DT ID belongs to you.
+                  </p>
+                  <div className={styles.formGroup}>
+                    <label>Your Email Address</label>
+                    <input 
+                      type="email" 
+                      required 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label>Reason for Dispute</label>
+                    <textarea 
+                      required 
+                      value={disputeReason}
+                      onChange={(e) => setDisputeReason(e.target.value)}
+                      rows={3}
+                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', marginTop: '0.25rem', fontFamily: 'inherit' }}
+                      placeholder="Please provide details..."
+                    />
+                  </div>
+                  <button type="submit" className={styles.submitBtn} disabled={formLoading}>
+                    {formLoading ? 'Submitting...' : 'Submit Dispute'}
+                  </button>
+                  <button 
+                    type="button"
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#666',
+                      marginTop: '1rem',
+                      cursor: 'pointer',
+                      fontSize: '0.875rem',
+                      display: 'block',
+                      width: '100%',
+                      textAlign: 'center'
+                    }}
+                    onClick={() => {
+                      setIsFilingDispute(false);
+                      setFormError('');
+                      setFormSuccess('');
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </form>
+              )
             ) : (
               <form onSubmit={handleClaimSubmit}>
                 <p style={{ marginBottom: '1rem', fontSize: '0.875rem', color: '#666' }}>
