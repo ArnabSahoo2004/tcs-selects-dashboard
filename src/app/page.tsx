@@ -2,7 +2,7 @@ import prisma from '@/lib/prisma';
 import styles from './page.module.css';
 import SearchAndClaim from '@/components/ui/SearchAndClaim/SearchAndClaim';
 import DashboardCharts from '@/components/ui/DashboardCharts/DashboardCharts';
-import ThemeToggle from '@/components/ui/ThemeToggle/ThemeToggle';
+import HomeHeader from '@/components/ui/HomeHeader/HomeHeader';
 
 export const revalidate = 60; // Revalidate stats every 60 seconds
 
@@ -40,8 +40,8 @@ export default async function Home() {
     <div className={styles.container}>
       <header className={styles.header}>
         <div className={styles.headerContent}>
-          <div className={styles.title}>Offer Tracker Dashboard</div>
-          <ThemeToggle />
+          <div className={styles.title}>TCS Selects Dashboard</div>
+          <HomeHeader />
         </div>
       </header>
 
