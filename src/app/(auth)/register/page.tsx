@@ -1,7 +1,7 @@
 // src/app/(auth)/register/page.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card/Card';
 import { Input } from '@/components/ui/Input/Input';
@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { Search, ShieldAlert, ArrowLeft, CheckCircle2, Ticket } from 'lucide-react';
 import styles from './Register.module.css';
 
-type RegisterStep = 'SEARCH' | 'VERIFY_AND_CLAIM' | 'ALREADY_CLAIMED' | 'DISPUTE' | 'SUCCESS';
+type RegisterStep = 'SEARCH' | 'VERIFY_AND_CLAIM' | 'OTP_VERIFICATION' | 'ALREADY_CLAIMED' | 'DISPUTE' | 'SUCCESS';
 
 interface CandidateInfo {
   id: string;
@@ -19,6 +19,8 @@ interface CandidateInfo {
   qualification?: string;
   specialization?: string;
   selectedRole?: string;
+  isClaimed?: boolean;
+  maskedEmail?: string | null;
 }
 
 export default function RegisterPage() {
@@ -26,13 +28,18 @@ export default function RegisterPage() {
 
   // Wizard state
   const [step, setStep] = useState<RegisterStep>('SEARCH');
-  const [searchId, setSearchId] = useState('');
   const [candidate, setCandidate] = useState<CandidateInfo | null>(null);
+  
+  // Search state
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<CandidateInfo[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
   
   // Registration form state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [otp, setOtp] = useState('');
   
   // Dispute form state
   const [claimantName, setClaimantName] = useState('');
@@ -45,40 +52,48 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
 
-  // Step 1: Search Reference ID
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchId.trim()) return;
-
-    setError(null);
-    setIsLoading(true);
-
-    try {
-      const res = await fetch(`/api/candidates/claim?referenceId=${encodeURIComponent(searchId)}`);
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to find Reference ID');
-      }
-
-      setCandidate(data.candidate);
-
-      if (data.claimed) {
-        setMaskedEmail(data.maskedEmail);
-        setStep('ALREADY_CLAIMED');
+  // Step 1: Live Search
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (query.trim().length >= 2) {
+        performSearch(query);
       } else {
-        setStep('VERIFY_AND_CLAIM');
+        setResults([]);
+        setShowDropdown(false);
       }
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Something went wrong';
-      setError(message);
-    } finally {
-      setIsLoading(false);
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [query]);
+
+  const performSearch = async (searchQuery: string) => {
+    try {
+      const res = await fetch(`/api/candidates/claim?query=${encodeURIComponent(searchQuery)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setResults(data.candidates || []);
+        setShowDropdown(true);
+      }
+    } catch (err) {
+      console.error('Search error:', err);
     }
   };
 
-  // Step 2: Claim & Register Account
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleSelectCandidate = (selected: CandidateInfo) => {
+    setCandidate(selected);
+    setShowDropdown(false);
+    setQuery(selected.referenceId);
+    
+    if (selected.isClaimed) {
+      setMaskedEmail(selected.maskedEmail || '');
+      setStep('ALREADY_CLAIMED');
+    } else {
+      setStep('VERIFY_AND_CLAIM');
+    }
+  };
+
+  // Step 2: Send OTP
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!candidate) return;
 
@@ -96,6 +111,39 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
+      const res = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          referenceId: candidate.referenceId,
+          email,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to send OTP');
+      }
+
+      setStep('OTP_VERIFICATION');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Something went wrong';
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Step 3: Verify OTP & Claim
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!candidate) return;
+
+    setError(null);
+    setIsLoading(true);
+
+    try {
       const res = await fetch('/api/candidates/claim', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -103,6 +151,7 @@ export default function RegisterPage() {
           referenceId: candidate.referenceId,
           email,
           password,
+          otp,
         }),
       });
 
@@ -122,7 +171,7 @@ export default function RegisterPage() {
     }
   };
 
-  // Step 3: Raise a Dispute
+  // Step 4: Raise a Dispute
   const handleDispute = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!candidate) return;
@@ -160,11 +209,12 @@ export default function RegisterPage() {
 
   const resetForm = () => {
     setStep('SEARCH');
-    setSearchId('');
+    setQuery('');
     setCandidate(null);
     setEmail('');
     setPassword('');
     setConfirmPassword('');
+    setOtp('');
     setClaimantName('');
     setClaimantEmail('');
     setDisputeReason('');
@@ -177,7 +227,7 @@ export default function RegisterPage() {
       {step === 'SEARCH' && (
         <CardHeader className={styles.header}>
           <h2 className={styles.title}>Find My Offer</h2>
-          <p className={styles.subtitle}>Enter your CT/DT Reference ID to claim your profile</p>
+          <p className={styles.subtitle}>Search your Name or ID to claim your profile</p>
         </CardHeader>
       )}
 
@@ -188,7 +238,19 @@ export default function RegisterPage() {
           </button>
           <div className={styles.headerDetails}>
             <h2 className={styles.title}>Verify & Register</h2>
-            <p className={styles.subtitle}>Step 2 of 2: Create your account</p>
+            <p className={styles.subtitle}>Step 1 of 2: Create your account</p>
+          </div>
+        </CardHeader>
+      )}
+
+      {step === 'OTP_VERIFICATION' && (
+        <CardHeader className={styles.headerRow}>
+          <button className={styles.backBtn} onClick={() => setStep('VERIFY_AND_CLAIM')}>
+            <ArrowLeft size={16} />
+          </button>
+          <div className={styles.headerDetails}>
+            <h2 className={styles.title}>Email Verification</h2>
+            <p className={styles.subtitle}>Step 2 of 2: Enter code</p>
           </div>
         </CardHeader>
       )}
@@ -227,29 +289,43 @@ export default function RegisterPage() {
 
         {/* STEP 1: SEARCH */}
         {step === 'SEARCH' && (
-          <form onSubmit={handleSearch} className={styles.form}>
-            <Input
-              label="TCS Reference ID"
-              placeholder="e.g. DT2023XXXXXXXX or CT2025XXXXXXXX"
-              value={searchId}
-              onChange={(e) => setSearchId(e.target.value)}
-              required
-              disabled={isLoading}
-            />
-            <Button type="submit" isLoading={isLoading} className={styles.submitBtn}>
-              <Search size={16} style={{ marginRight: '8px' }} />
-              Find Profile
-            </Button>
+          <div className={styles.form}>
+            <div className={styles.searchContainer}>
+              <Input
+                label="Search Candidate"
+                placeholder="Name or CT/DT ID..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                disabled={isLoading}
+                onFocus={() => { if(results.length > 0) setShowDropdown(true); }}
+                onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+              />
+              {showDropdown && results.length > 0 && (
+                <div className={styles.dropdown}>
+                  {results.map((res) => (
+                    <div 
+                      key={res.id} 
+                      className={styles.dropdownItem}
+                      onClick={() => handleSelectCandidate(res)}
+                    >
+                      <span className={styles.candidateName}>{res.name}</span>
+                      <span className={styles.candidateId}>{res.referenceId}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
             <div className={styles.footerLink}>
               Already claimed?{' '}
               <Link href="/login" className={styles.loginLink}>
                 Sign In
               </Link>
             </div>
-          </form>
+          </div>
         )}
 
-        {/* STEP 2: VERIFY AND CLAIM */}
+        {/* STEP 2: VERIFY AND CLAIM (SEND OTP) */}
         {step === 'VERIFY_AND_CLAIM' && candidate && (
           <div className={styles.wizard}>
             {/* Identity details validation block */}
@@ -266,25 +342,23 @@ export default function RegisterPage() {
                 <span className={styles.metaLabel}>Offer:</span>
                 <span className={styles.metaValueRole}>{candidate.selectedRole}</span>
               </div>
-              <div className={styles.metaRow}>
-                <span className={styles.metaLabel}>Branch:</span>
-                <span className={styles.metaValue}>{candidate.specialization}</span>
-              </div>
             </div>
 
-            <form onSubmit={handleRegister} className={styles.form}>
+            <form onSubmit={handleSendOtp} className={styles.form}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>
+                We will send a 6-digit verification code to this email address.
+              </p>
               <Input
-                label="Create Email Username"
+                label="Email Address"
                 type="email"
                 placeholder="your.email@domain.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
-                helperText="This email will be used for dashboard login credentials."
               />
               <Input
-                label="Password"
+                label="Create Password"
                 type="password"
                 placeholder="Minimum 8 characters"
                 value={password}
@@ -302,7 +376,32 @@ export default function RegisterPage() {
                 disabled={isLoading}
               />
               <Button type="submit" isLoading={isLoading} className={styles.submitBtn}>
-                Claim Profile & Register
+                Send Verification Code
+              </Button>
+            </form>
+          </div>
+        )}
+
+        {/* STEP 2B: OTP VERIFICATION */}
+        {step === 'OTP_VERIFICATION' && candidate && (
+          <div className={styles.wizard}>
+            <form onSubmit={handleVerifyOtp} className={styles.form}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', marginBottom: '8px', lineHeight: '1.5' }}>
+                We&apos;ve sent a 6-digit verification code to <strong>{email}</strong>. Enter it below to complete your registration.
+              </p>
+              <Input
+                label="Verification Code"
+                type="text"
+                placeholder="123456"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                required
+                disabled={isLoading}
+                maxLength={6}
+                style={{ letterSpacing: '4px', textAlign: 'center', fontSize: '1.25rem' }}
+              />
+              <Button type="submit" isLoading={isLoading} className={styles.submitBtn}>
+                Verify & Complete Registration
               </Button>
             </form>
           </div>
