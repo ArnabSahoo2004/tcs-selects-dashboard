@@ -8,12 +8,14 @@ declare module 'next-auth' {
       id: string;
       candidateId: string | null;
       referenceId: string | null;
+      isAdmin?: boolean;
     } & DefaultSession['user']
   }
 
   interface User extends DefaultUser {
     candidateId: string | null;
     referenceId: string | null;
+    isAdmin?: boolean;
   }
 }
 
@@ -22,5 +24,6 @@ declare module 'next-auth/jwt' {
     id: string;
     candidateId: string | null;
     referenceId: string | null;
+    isAdmin?: boolean;
   }
 }

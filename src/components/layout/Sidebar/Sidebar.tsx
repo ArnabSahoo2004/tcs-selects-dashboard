@@ -16,6 +16,7 @@ import {
   User as UserIcon,
   BarChart2,
   ExternalLink,
+  Shield,
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -41,6 +42,14 @@ export const Sidebar: React.FC<SidebarProps> = () => {
       icon: Settings,
     },
   ];
+
+  if (session?.user?.isAdmin) {
+    menuItems.push({
+      label: 'Admin Disputes',
+      href: '/dashboard/admin/disputes',
+      icon: Shield,
+    });
+  }
 
   const filteredItems = menuItems;
 

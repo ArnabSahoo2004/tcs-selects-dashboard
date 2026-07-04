@@ -32,12 +32,15 @@ export const authOptions: AuthOptions = {
           throw new Error('Incorrect password');
         }
 
+        const isAdmin = user.email.toLowerCase() === 'arnabsahoo27@gmail.com';
+
         return {
           id: user.id,
           email: user.email,
           name: user.candidate?.name || 'Candidate',
           candidateId: user.candidate?.id || null,
           referenceId: user.candidate?.referenceId || null,
+          isAdmin,
         };
       },
     }),
@@ -48,6 +51,7 @@ export const authOptions: AuthOptions = {
         token.id = user.id;
         token.candidateId = user.candidateId;
         token.referenceId = user.referenceId;
+        token.isAdmin = user.isAdmin;
       }
       return token;
     },
@@ -58,6 +62,7 @@ export const authOptions: AuthOptions = {
           id: token.id,
           candidateId: token.candidateId,
           referenceId: token.referenceId,
+          isAdmin: token.isAdmin,
         };
       }
       return session;
