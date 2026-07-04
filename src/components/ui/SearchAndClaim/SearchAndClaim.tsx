@@ -88,12 +88,6 @@ export default function SearchAndClaim() {
     setFormSuccess('');
   };
 
-  const openLoginModal = () => {
-    setIsLoginModalOpen(true);
-    setEmail('');
-    setPassword('');
-    setFormError('');
-  };
 
   const openOffCampusModal = () => {
     setIsOffCampusModalOpen(true);
