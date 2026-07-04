@@ -48,7 +48,6 @@ export const Sidebar: React.FC<SidebarProps> = () => {
     <aside className={cn(styles.sidebar, isCollapsed && styles.collapsed)}>
       <div className={styles.header}>
         <Link href="/dashboard" className={styles.logoContainer} style={{ textDecoration: 'none' }}>
-          <span className={styles.logoIcon}>T</span>
           <span className={cn(styles.logoText, isCollapsed && styles.hidden)}>
             <Image src="/tcs-logo.png" alt="TCS Logo" width={100} height={32} style={{ objectFit: 'contain' }} />
           </span>
