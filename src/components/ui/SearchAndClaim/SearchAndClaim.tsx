@@ -474,7 +474,7 @@ export default function SearchAndClaim() {
             ) : (
               <form onSubmit={handleClaimSubmit}>
                 <p style={{ marginBottom: '1rem', fontSize: '0.875rem', color: '#666' }}>
-                  We've sent a 6-digit code to <strong>{email}</strong>. Enter it below to complete registration.
+                  We&apos;ve sent a 6-digit code to <strong>{email}</strong>. Enter it below to complete registration.
                 </p>
                 <div className={styles.formGroup}>
                   <label>Verification Code</label>
