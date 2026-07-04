@@ -27,6 +27,8 @@ export default function SearchAndClaim() {
   const [isOffCampusModalOpen, setIsOffCampusModalOpen] = useState(false);
 
   // Claim/Login form
+  const [claimStep, setClaimStep] = useState<'DETAILS' | 'OTP'>('DETAILS');
+  const [otp, setOtp] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formLoading, setFormLoading] = useState(false);
@@ -105,12 +107,45 @@ export default function SearchAndClaim() {
     setFormError('');
   };
 
+  const handleSendOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedCandidate) return;
+
+    setFormLoading(true);
+    setFormError('');
+
+    try {
+      const res = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          referenceId: selectedCandidate.referenceId,
+          email,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setFormSuccess('OTP sent to your email.');
+        setClaimStep('OTP');
+      } else {
+        setFormError(data.error || 'Failed to send OTP.');
+      }
+    } catch {
+      setFormError('An error occurred.');
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
   const handleClaimSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCandidate) return;
 
     setFormLoading(true);
     setFormError('');
+    setFormSuccess('');
 
     try {
       const res = await fetch('/api/candidates/claim', {
@@ -119,7 +154,8 @@ export default function SearchAndClaim() {
         body: JSON.stringify({
           referenceId: selectedCandidate.referenceId,
           email,
-          password
+          password,
+          otp
         }),
       });
 
@@ -223,6 +259,9 @@ export default function SearchAndClaim() {
     setIsOffCampusModalOpen(false);
     setIsFilingDispute(false);
     setDisputeReason('');
+    setClaimStep('DETAILS');
+    setOtp('');
+    setEmail('');
   };
 
   const handleDisputeSubmit = async (e: React.FormEvent) => {
@@ -404,10 +443,10 @@ export default function SearchAndClaim() {
                   </button>
                 </form>
               )
-            ) : (
-              <form onSubmit={handleClaimSubmit}>
+            ) : claimStep === 'DETAILS' ? (
+              <form onSubmit={handleSendOtp}>
                 <p style={{ marginBottom: '1rem', fontSize: '0.875rem', color: '#666' }}>
-                  Set an email and password to claim this profile and update your statuses.
+                  Set an email and password to claim this profile. We will send a verification code to this email.
                 </p>
                 <div className={styles.formGroup}>
                   <label>Email Address</label>
@@ -428,7 +467,46 @@ export default function SearchAndClaim() {
                   />
                 </div>
                 <button type="submit" className={styles.submitBtn} disabled={formLoading}>
-                  {formLoading ? 'Claiming...' : 'Claim Profile'}
+                  {formLoading ? 'Sending...' : 'Send Verification Code'}
+                </button>
+                {formError && <div className={styles.error}>{formError}</div>}
+              </form>
+            ) : (
+              <form onSubmit={handleClaimSubmit}>
+                <p style={{ marginBottom: '1rem', fontSize: '0.875rem', color: '#666' }}>
+                  We've sent a 6-digit code to <strong>{email}</strong>. Enter it below to complete registration.
+                </p>
+                <div className={styles.formGroup}>
+                  <label>Verification Code</label>
+                  <input 
+                    type="text" 
+                    required 
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="123456"
+                    maxLength={6}
+                    style={{ letterSpacing: '4px', textAlign: 'center', fontSize: '1.25rem' }}
+                  />
+                </div>
+                <button type="submit" className={styles.submitBtn} disabled={formLoading}>
+                  {formLoading ? 'Verifying...' : 'Verify & Claim Profile'}
+                </button>
+                <button 
+                  type="button"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#666',
+                    marginTop: '1rem',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem',
+                    display: 'block',
+                    width: '100%',
+                    textAlign: 'center'
+                  }}
+                  onClick={() => setClaimStep('DETAILS')}
+                >
+                  Back to Details
                 </button>
                 {formError && <div className={styles.error}>{formError}</div>}
                 {formSuccess && <div className={styles.success}>{formSuccess}</div>}

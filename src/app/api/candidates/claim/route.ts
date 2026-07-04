@@ -82,11 +82,11 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { referenceId, email, password } = body;
+    const { referenceId, email, password, otp } = body;
 
-    if (!referenceId || !email || !password) {
+    if (!referenceId || !email || !password || !otp) {
       return NextResponse.json(
-        { success: false, error: 'All fields are required' },
+        { success: false, error: 'All fields including OTP are required.' },
         { status: 400 }
       );
     }
@@ -125,7 +125,24 @@ export async function POST(request: Request) {
       );
     }
 
-    // 3. Hash password and create User
+    // 3. Verify OTP
+    const otpRecord = await prisma.otp.findFirst({
+      where: {
+        email: trimmedEmail,
+        code: otp,
+        expiresAt: { gt: new Date() },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!otpRecord) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid or expired verification code.' },
+        { status: 400 }
+      );
+    }
+
+    // 4. Hash password and create User
     const passwordHash = await bcrypt.hash(password, 12);
     
     await prisma.$transaction(async (tx) => {
@@ -142,6 +159,11 @@ export async function POST(request: Request) {
           userId: user.id,
           claimStatus: 'CLAIMED',
         },
+      });
+
+      // Delete the used OTP
+      await tx.otp.delete({
+        where: { id: otpRecord.id },
       });
 
       return { user };

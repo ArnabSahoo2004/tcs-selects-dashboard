@@ -46,3 +46,12 @@ model DisputeTicket {
   reason          String
   status          String   @default("OPEN")
 }
+
+model Otp {
+  id        String   @id @default(cuid())
+  email     String   
+  code      String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
