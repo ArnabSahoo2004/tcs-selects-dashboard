@@ -80,7 +80,6 @@ export default async function Home() {
             <h3 className={styles.statTitle}>Profiles Claimed</h3>
             <div className={styles.statValueContainer}>
               <div className={styles.statValue}>{claimedProfiles}</div>
-              <div className={styles.statTrend}>▲ 8%</div>
             </div>
             <div className={styles.statSubtext}>{claimPercentage}% Engagement rate</div>
           </div>
@@ -105,7 +104,6 @@ export default async function Home() {
             <h3 className={styles.statTitle}>Joining Letters</h3>
             <div className={styles.statValueContainer}>
               <div className={styles.statValue}>{joiningLetters}</div>
-              <div className={styles.statTrend}>▲ 20%</div>
             </div>
             <div className={styles.statSubtext}>Final Step completions</div>
           </div>
@@ -114,7 +112,6 @@ export default async function Home() {
             <h3 className={styles.statTitle}>BGC Started</h3>
             <div className={styles.statValueContainer}>
               <div className={styles.statValue}>{bgcStarted}</div>
-              <div className={styles.statTrend}>▲ 11%</div>
             </div>
             <div className={styles.statSubtext}>Currently in progress</div>
           </div>
