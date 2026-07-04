@@ -225,15 +225,6 @@ export default function SearchAndClaim() {
 
   return (
     <>
-      {/* Login Button on top right */}
-      <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', zIndex: 50 }}>
-        <button 
-          className={styles.loginBtn}
-          onClick={openLoginModal}
-        >
-          Login
-        </button>
-      </div>
 
       <div className={styles.hero} style={{ marginTop: '3rem' }}>
         <h2>Find or Add your Offer</h2>
@@ -303,7 +294,7 @@ export default function SearchAndClaim() {
                   className={styles.submitBtn}
                   onClick={() => {
                     closeModals();
-                    openLoginModal();
+                    router.push('/login');
                   }}
                 >
                   Login to this account
