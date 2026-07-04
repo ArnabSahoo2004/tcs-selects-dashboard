@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
-// Initialize Resend with fallback for the demo
-const resend = new Resend(process.env.RESEND_API_KEY || 're_sxGoGQPb_LS88quEQRHvXUXYCafF7pwmK');
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER || 'tcsxsoa.selects.verify@gmail.com',
+    pass: process.env.EMAIL_APP_PASSWORD || 'rykvmrktbbzswgrw',
+  },
+});
 
 export async function POST(request: Request) {
   try {
@@ -62,10 +67,10 @@ export async function POST(request: Request) {
       },
     });
 
-    // 5. Send email via Resend
-    const data = await resend.emails.send({
-      from: 'TCS Selects Dashboard <onboarding@resend.dev>', // resend.dev is the default test domain
-      to: [trimmedEmail],
+    // 5. Send email via Nodemailer
+    const mailOptions = {
+      from: `"TCS Selects Dashboard" <${process.env.EMAIL_USER || 'tcsxsoa.selects.verify@gmail.com'}>`,
+      to: trimmedEmail,
       subject: 'Verify your email to claim your TCS profile',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
@@ -80,15 +85,9 @@ export async function POST(request: Request) {
           <p style="color: #64748b; font-size: 14px;">If you did not request this, you can safely ignore this email.</p>
         </div>
       `,
-    });
+    };
 
-    if (data.error) {
-      console.error('Resend Error:', data.error);
-      return NextResponse.json(
-        { success: false, error: 'Failed to send verification email.' },
-        { status: 500 }
-      );
-    }
+    await transporter.sendMail(mailOptions);
 
     return NextResponse.json({
       success: true,
