@@ -3,10 +3,15 @@ import styles from './page.module.css';
 import SearchAndClaim from '@/components/ui/SearchAndClaim/SearchAndClaim';
 import DashboardCharts from '@/components/ui/DashboardCharts/DashboardCharts';
 import HomeHeader from '@/components/ui/HomeHeader/HomeHeader';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
 export const revalidate = 60; // Revalidate stats every 60 seconds
 
 export default async function Home() {
+  const session = await getServerSession(authOptions);
+  const isLoggedIn = !!session?.user;
+
   // Run all aggregations in parallel
   const [
     totalCandidates,
@@ -51,6 +56,12 @@ export default async function Home() {
           <h1 className={styles.heroTitle}>Public Tracker Stats</h1>
           <p className={styles.heroSubtitle}>Live overview of offer rollouts and joining progress across all candidates.</p>
         </div>
+
+        {!isLoggedIn && (
+          <div style={{ marginBottom: '4rem' }}>
+            <SearchAndClaim />
+          </div>
+        )}
 
         <div className={styles.statsGrid}>
           {/* Main Progress Cards */}
@@ -122,10 +133,6 @@ export default async function Home() {
           bgcStarted
         }} />
 
-        <hr style={{ width: '100%', border: 'none', borderTop: '1px solid rgba(255,255,255,0.1)', marginBottom: '4rem', marginTop: '2rem' }} />
-
-        {/* Client side search and claim section */}
-        <SearchAndClaim />
       </main>
     </div>
   );
