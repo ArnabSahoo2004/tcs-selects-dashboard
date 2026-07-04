@@ -13,6 +13,8 @@ import {
   ChevronLeft,
   ChevronRight,
   User as UserIcon,
+  BarChart2,
+  ExternalLink,
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -60,6 +62,21 @@ export const Sidebar: React.FC<SidebarProps> = () => {
       </div>
 
       <nav className={styles.nav}>
+        {/* External link to public stats page */}
+        <div className={styles.navSection}>
+          <Link
+            href="/"
+            className={styles.link}
+            title="Public Stats"
+          >
+            <BarChart2 size={20} className={styles.icon} />
+            <span className={cn(styles.label, isCollapsed && styles.hidden)}>Public Stats</span>
+            <ExternalLink size={12} className={cn(styles.externalIcon, isCollapsed && styles.hidden)} />
+          </Link>
+        </div>
+
+        <div className={cn(styles.navDivider, isCollapsed && styles.navDividerCollapsed)} />
+
         <ul className={styles.list}>
           {filteredItems.map((item) => {
             const isActive = item.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(item.href);
