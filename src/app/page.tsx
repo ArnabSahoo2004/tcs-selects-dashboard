@@ -80,11 +80,11 @@ export default async function Home() {
           </div>
 
           <div className={styles.statCard}>
-            <h3 className={styles.statTitle}>JRS Sessions Assigned</h3>
+            <h3 className={styles.statTitle}>JRS Form Submitted</h3>
             <div className={styles.statValueContainer}>
               <div className={styles.statValue}>{jrsAssigned}</div>
             </div>
-            <div className={styles.statSubtext}>Waiting for next batch</div>
+            <div className={styles.statSubtext}>Candidates who submitted JRS</div>
           </div>
 
           <div className={styles.statCard}>

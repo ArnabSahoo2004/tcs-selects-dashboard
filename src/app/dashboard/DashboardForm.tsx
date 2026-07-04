@@ -2,8 +2,96 @@
 
 import { useState } from 'react';
 import { updateCandidateDetails } from './actions';
-
 import { useRouter } from 'next/navigation';
+
+const selectStyle = {
+  width: '100%',
+  padding: '0.75rem',
+  borderRadius: '8px',
+  border: '1px solid var(--tcs-border)',
+  color: 'var(--tcs-text)',
+  background: 'var(--tcs-card)',
+  fontSize: '0.95rem',
+};
+
+const dateStyle = {
+  width: '100%',
+  padding: '0.75rem',
+  borderRadius: '8px',
+  border: '1px solid var(--tcs-border)',
+  color: 'var(--tcs-text)',
+  background: 'var(--tcs-card)',
+  marginTop: '0.5rem',
+  fontSize: '0.95rem',
+};
+
+const labelStyle = {
+  display: 'block',
+  marginBottom: '0.5rem',
+  fontWeight: 600 as const,
+  color: 'var(--tcs-text-secondary)',
+};
+
+const fieldStyle = { marginBottom: '1.5rem' };
+
+const hintStyle = {
+  fontSize: '0.8rem',
+  color: 'var(--tcs-text-secondary)',
+  marginTop: '0.35rem',
+};
+
+// Reusable Received/Not Received field
+function ReceivedField({
+  label,
+  name,
+  hasValue,
+  defaultDate,
+  hint,
+  onChange,
+}: {
+  label: string;
+  name: string;
+  hasValue: boolean;
+  defaultDate: string;
+  hint?: string;
+  onChange?: (received: boolean) => void;
+}) {
+  const [received, setReceived] = useState(hasValue);
+
+  const handleChange = (val: string) => {
+    const isReceived = val === 'yes';
+    setReceived(isReceived);
+    onChange?.(isReceived);
+  };
+
+  return (
+    <div style={fieldStyle}>
+      <label style={labelStyle}>{label}</label>
+      <select
+        style={selectStyle}
+        value={received ? 'yes' : 'no'}
+        onChange={(e) => handleChange(e.target.value)}
+        name={`${name}_status`}
+      >
+        <option value="no">Not Received</option>
+        <option value="yes">Received</option>
+      </select>
+      {hint && <p style={hintStyle}>{hint}</p>}
+      {/* Hidden date — sent to server; pre-filled if already set or set to today when toggled on */}
+      <input
+        type="hidden"
+        name={name}
+        value={received ? (defaultDate || new Date().toISOString().split('T')[0]) : ''}
+      />
+      {received && (
+        <div style={{ marginTop: '0.75rem' }}>
+          <label style={{ ...labelStyle, fontSize: '0.85rem' }}>Date received (optional)</label>
+          <input type="date" name={`${name}_display`} defaultValue={defaultDate} style={dateStyle} disabled />
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function DashboardForm({ candidate }: { candidate: Record<string, unknown> }) {
   const router = useRouter();
@@ -15,7 +103,7 @@ export default function DashboardForm({ candidate }: { candidate: Record<string,
     return new Date(date).toISOString().split('T')[0];
   };
 
-  const [joiningDate, setJoiningDate] = useState(formatDate(candidate.joiningDate as Date));
+  const [joiningReceived, setJoiningReceived] = useState(!!candidate.joiningDate);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,82 +127,116 @@ export default function DashboardForm({ candidate }: { candidate: Record<string,
   return (
     <form onSubmit={handleSubmit} style={{ background: 'var(--tcs-card)', padding: '2rem', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
       <h2 style={{ marginBottom: '1.5rem', fontWeight: 700, fontSize: '1.5rem', color: 'var(--tcs-text)' }}>Update Your Offer Status</h2>
-      
+
       {message && (
         <div style={{ padding: '1rem', marginBottom: '1.5rem', borderRadius: '8px', background: message.includes('success') ? '#dcfce7' : '#fee2e2', color: message.includes('success') ? '#166534' : '#991b1b' }}>
           {message}
         </div>
       )}
 
-      <div style={{ marginBottom: '1.5rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: 'var(--tcs-text-secondary)' }}>Campus Type</label>
-        <select name="campusType" defaultValue={(candidate.campusType as string) || ''} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', color: 'var(--tcs-text)', background: 'var(--tcs-card)' }}>
+      {/* Campus Type */}
+      <div style={fieldStyle}>
+        <label style={labelStyle}>Campus Type</label>
+        <select name="campusType" defaultValue={(candidate.campusType as string) || ''} style={selectStyle}>
           <option value="">Select Option</option>
           <option value="On Campus">On Campus</option>
           <option value="Off Campus">Off Campus</option>
         </select>
       </div>
 
-      <div style={{ marginBottom: '1.5rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: 'var(--tcs-text-secondary)' }}>Date of Offer Letter</label>
-        <input type="date" name="offerLetterDate" defaultValue={formatDate(candidate.offerLetterDate as Date)} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', color: 'var(--tcs-text)', background: 'var(--tcs-card)' }} />
-      </div>
+      {/* Offer Letter */}
+      <ReceivedField
+        label="Offer Letter"
+        name="offerLetterDate"
+        hasValue={!!candidate.offerLetterDate}
+        defaultDate={formatDate(candidate.offerLetterDate as Date)}
+        hint="Have you received your Offer Letter from TCS?"
+      />
 
-      <div style={{ marginBottom: '1.5rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: 'var(--tcs-text-secondary)' }}>Date of JRS</label>
-        <input type="date" name="jrsDate" defaultValue={formatDate(candidate.jrsDate as Date)} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', color: 'var(--tcs-text)', background: 'var(--tcs-card)' }} />
-      </div>
+      {/* JRS Form */}
+      <ReceivedField
+        label="JRS Form Submitted"
+        name="jrsDate"
+        hasValue={!!candidate.jrsDate}
+        defaultDate={formatDate(candidate.jrsDate as Date)}
+        hint="Have you submitted your JRS (Job Readiness Survey) form?"
+      />
 
-      <div style={{ marginBottom: '1.5rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: 'var(--tcs-text-secondary)' }}>Date of Joining Letter</label>
-        <input 
-          type="date" 
-          name="joiningDate" 
-          value={joiningDate}
-          onChange={(e) => setJoiningDate(e.target.value)}
-          style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', color: 'var(--tcs-text)', background: 'var(--tcs-card)' }} 
-        />
-      </div>
+      {/* Joining Letter */}
+      <ReceivedField
+        label="Joining Letter"
+        name="joiningDate"
+        hasValue={!!candidate.joiningDate}
+        defaultDate={formatDate(candidate.joiningDate as Date)}
+        hint="Have you received your Joining Letter from TCS?"
+        onChange={(received) => setJoiningReceived(received)}
+      />
 
-      {joiningDate && (
-        <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#f8fafc', borderLeft: '4px solid #477AC6', borderRadius: '4px' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: 'var(--tcs-text-secondary)' }}>Assigned Location</label>
-          <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.75rem' }}>Since you have received your joining letter, please mention the location you were assigned to.</p>
-          <input type="text" name="assignedLocation" placeholder="e.g. Pune, Mumbai, Bangalore" defaultValue={candidate.assignedLocation as string || ''} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', color: 'var(--tcs-text)', background: 'var(--tcs-card)' }} />
+      {/* Assigned Location — shown only when joining letter received */}
+      {joiningReceived && (
+        <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(71,122,198,0.06)', borderLeft: '4px solid #477AC6', borderRadius: '4px' }}>
+          <label style={labelStyle}>Assigned Location</label>
+          <p style={hintStyle}>Since you have received your joining letter, please mention the location you were assigned to.</p>
+          <input
+            type="text"
+            name="assignedLocation"
+            placeholder="e.g. Pune, Mumbai, Bangalore"
+            defaultValue={(candidate.assignedLocation as string) || ''}
+            style={{ ...dateStyle, marginTop: '0.75rem' }}
+          />
         </div>
       )}
 
-      <div style={{ marginBottom: '1.5rem', borderTop: '1px solid #eee', paddingTop: '1.5rem' }}>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--tcs-text)', marginBottom: '1rem' }}>Location Preferences</h3>
-        <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '1rem' }}>Enter the 3 location preferences you provided during the selection process.</p>
-        
+      {/* Location Preferences */}
+      <div style={{ marginBottom: '1.5rem', borderTop: '1px solid var(--tcs-border)', paddingTop: '1.5rem' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--tcs-text)', marginBottom: '0.5rem' }}>Location Preferences</h3>
+        <p style={{ ...hintStyle, marginBottom: '1rem' }}>Enter the 3 location preferences you provided during the selection process (in order).</p>
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: 'var(--tcs-text-secondary)', fontSize: '0.9rem' }}>Preference 1</label>
-            <input type="text" name="prefLocation1" defaultValue={candidate.prefLocation1 as string || ''} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', color: 'var(--tcs-text)', background: 'var(--tcs-card)' }} />
-          </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: 'var(--tcs-text-secondary)', fontSize: '0.9rem' }}>Preference 2</label>
-            <input type="text" name="prefLocation2" defaultValue={candidate.prefLocation2 as string || ''} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', color: 'var(--tcs-text)', background: 'var(--tcs-card)' }} />
-          </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: 'var(--tcs-text-secondary)', fontSize: '0.9rem' }}>Preference 3</label>
-            <input type="text" name="prefLocation3" defaultValue={candidate.prefLocation3 as string || ''} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', color: 'var(--tcs-text)', background: 'var(--tcs-card)' }} />
-          </div>
+          {[1, 2, 3].map((n) => (
+            <div key={n}>
+              <label style={{ ...labelStyle, fontSize: '0.9rem' }}>Preference {n}</label>
+              <input
+                type="text"
+                name={`prefLocation${n}`}
+                defaultValue={(candidate[`prefLocation${n}`] as string) || ''}
+                style={dateStyle}
+                placeholder={`e.g. ${['Chennai', 'Pune', 'Hyderabad'][n - 1]}`}
+              />
+            </div>
+          ))}
         </div>
       </div>
 
-      <div style={{ marginBottom: '1.5rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: 'var(--tcs-text-secondary)' }}>ILP Attempted (Count)</label>
-        <input type="number" name="ilpAttempted" defaultValue={candidate.ilpAttempted as number} min="0" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', color: 'var(--tcs-text)', background: 'var(--tcs-card)' }} />
+      {/* ILP */}
+      <div style={fieldStyle}>
+        <label style={labelStyle}>ILP Attempted (Count)</label>
+        <input
+          type="number"
+          name="ilpAttempted"
+          defaultValue={candidate.ilpAttempted as number}
+          min="0"
+          style={selectStyle}
+        />
       </div>
 
-      <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        <input type="checkbox" name="bgcStarted" id="bgcStarted" defaultChecked={candidate.bgcStarted as boolean} style={{ width: '1.25rem', height: '1.25rem', cursor: 'pointer' }} />
+      {/* BGC */}
+      <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <input
+          type="checkbox"
+          name="bgcStarted"
+          id="bgcStarted"
+          defaultChecked={candidate.bgcStarted as boolean}
+          style={{ width: '1.25rem', height: '1.25rem', cursor: 'pointer', accentColor: '#477AC6' }}
+        />
         <label htmlFor="bgcStarted" style={{ fontWeight: 600, color: 'var(--tcs-text-secondary)' }}>BGC Started?</label>
       </div>
 
-      <button type="submit" disabled={loading} style={{ width: '100%', padding: '1rem', background: '#f97316', color: 'var(--tcs-card)', border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer' }}>
+      <button
+        type="submit"
+        disabled={loading}
+        style={{ width: '100%', padding: '1rem', background: '#477AC6', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer', transition: 'background 0.2s' }}
+      >
         {loading ? 'Saving...' : 'Submit / Update'}
       </button>
     </form>
