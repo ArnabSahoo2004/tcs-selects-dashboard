@@ -63,3 +63,24 @@
   border-radius: var(--radius-full);
   box-shadow: var(--shadow-sm);
 }
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 1.5rem;
+  text-align: center;
+  z-index: 10;
+}
+
+.disclaimer {
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.6;
+}
+
+.disclaimer strong {
+  color: rgba(255, 255, 255, 0.7);
+}
