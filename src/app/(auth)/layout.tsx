@@ -20,7 +20,7 @@ export default function AuthLayout({
       
       <div className={styles.cardWrapper}>
         <div className={styles.logoBadge}>
-          <span>TCS Tracker</span>
+          <span>TCS Selects</span>
         </div>
         {children}
       </div>
