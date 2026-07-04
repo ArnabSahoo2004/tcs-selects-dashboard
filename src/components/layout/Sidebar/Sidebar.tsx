@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import { cn } from '@/lib/utils';
@@ -49,7 +50,7 @@ export const Sidebar: React.FC<SidebarProps> = () => {
         <Link href="/dashboard" className={styles.logoContainer} style={{ textDecoration: 'none' }}>
           <span className={styles.logoIcon}>T</span>
           <span className={cn(styles.logoText, isCollapsed && styles.hidden)}>
-            TCS Selects
+            <Image src="/tcs-logo.png" alt="TCS Logo" width={100} height={32} style={{ objectFit: 'contain' }} />
           </span>
         </Link>
         <button

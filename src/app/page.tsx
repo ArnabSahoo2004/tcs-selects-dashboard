@@ -3,6 +3,7 @@ import styles from './page.module.css';
 import SearchAndClaim from '@/components/ui/SearchAndClaim/SearchAndClaim';
 import DashboardCharts from '@/components/ui/DashboardCharts/DashboardCharts';
 import HomeHeader from '@/components/ui/HomeHeader/HomeHeader';
+import Image from 'next/image';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -45,7 +46,9 @@ export default async function Home() {
     <div className={styles.container}>
       <header className={styles.header}>
         <div className={styles.headerContent}>
-          <div className={styles.title}>TCS Selects Dashboard</div>
+          <div className={styles.title}>
+            <Image src="/tcs-logo.png" alt="TCS Logo" width={120} height={40} style={{ objectFit: 'contain' }} />
+          </div>
           <HomeHeader />
         </div>
       </header>
