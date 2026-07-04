@@ -115,12 +115,6 @@ function ReceivedField({
         name={name}
         value={received ? (defaultDate || new Date().toISOString().split('T')[0]) : ''}
       />
-      {received && (
-        <div style={{ marginTop: '0.75rem' }}>
-          <label style={{ ...labelStyle, fontSize: '0.85rem' }}>{dateLabel || 'Date received (optional)'}</label>
-          <input type="date" name={`${name}_display`} defaultValue={defaultDate} style={dateStyle} disabled />
-        </div>
-      )}
     </div>
   );
 }
