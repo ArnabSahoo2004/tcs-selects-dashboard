@@ -222,7 +222,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <Card hoverable={false} glass={true}>
+    <Card hoverable={false} glass={true} style={{ overflow: 'visible' }}>
       {/* HEADER RENDERING */}
       {step === 'SEARCH' && (
         <CardHeader className={styles.header}>
