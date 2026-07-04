@@ -43,8 +43,9 @@ export async function GET() {
       message: 'Demo dispute created successfully! Check your Admin Panel.',
       ticket
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
-    return NextResponse.json({ success: false, error: error.message });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ success: false, error: errorMessage });
   }
 }
