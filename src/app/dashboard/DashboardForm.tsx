@@ -40,17 +40,6 @@ const selectStyle = {
   fontSize: '0.95rem',
 };
 
-const dateStyle = {
-  width: '100%',
-  padding: '0.75rem',
-  borderRadius: '8px',
-  border: '1px solid var(--tcs-border)',
-  color: 'var(--tcs-text)',
-  background: 'var(--tcs-card)',
-  marginTop: '0.5rem',
-  fontSize: '0.95rem',
-};
-
 const labelStyle = {
   display: 'block',
   marginBottom: '0.5rem',
@@ -75,7 +64,6 @@ function ReceivedField({
   hint,
   yesLabel,
   noLabel,
-  dateLabel,
   onChange,
 }: {
   label: string;
@@ -85,7 +73,6 @@ function ReceivedField({
   hint?: string;
   yesLabel?: string;
   noLabel?: string;
-  dateLabel?: string;
   onChange?: (received: boolean) => void;
 }) {
   const [received, setReceived] = useState(hasValue);
@@ -188,7 +175,6 @@ export default function DashboardForm({ candidate }: { candidate: Record<string,
         hint="Have you submitted your JRS (Job Readiness Survey) form?"
         yesLabel="Submitted"
         noLabel="Not Submitted"
-        dateLabel="Date submitted (optional)"
       />
 
       {/* Joining Letter */}
