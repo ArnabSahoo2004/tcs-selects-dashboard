@@ -374,7 +374,7 @@ export default function SearchAndClaim() {
                       value={disputeReason}
                       onChange={(e) => setDisputeReason(e.target.value)}
                       rows={3}
-                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', marginTop: '0.25rem', fontFamily: 'inherit' }}
+                      style={{ resize: 'vertical', marginTop: '0.25rem', fontFamily: 'inherit' }}
                       placeholder="Please provide details..."
                     />
                   </div>
