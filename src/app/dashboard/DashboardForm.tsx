@@ -4,6 +4,32 @@ import { useState } from 'react';
 import { updateCandidateDetails } from './actions';
 import { useRouter } from 'next/navigation';
 
+// Official TCS posting locations
+const TCS_LOCATIONS = [
+  'Ahmedabad',
+  'Bangalore',
+  'Bhubaneswar',
+  'Chennai',
+  'Coimbatore',
+  'Delhi NCR',
+  'Gandhinagar',
+  'Gurgaon',
+  'Hyderabad',
+  'Indore',
+  'Jaipur',
+  'Kochi',
+  'Kolkata',
+  'Lucknow',
+  'Mumbai',
+  'Mysore',
+  'Nagpur',
+  'Noida',
+  'Pune',
+  'Thiruvananthapuram',
+  'Vadodara',
+  'Visakhapatnam',
+];
+
 const selectStyle = {
   width: '100%',
   padding: '0.75rem',
@@ -177,32 +203,38 @@ export default function DashboardForm({ candidate }: { candidate: Record<string,
         <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(71,122,198,0.06)', borderLeft: '4px solid #477AC6', borderRadius: '4px' }}>
           <label style={labelStyle}>Assigned Location</label>
           <p style={hintStyle}>Since you have received your joining letter, please mention the location you were assigned to.</p>
-          <input
-            type="text"
+          <select
             name="assignedLocation"
-            placeholder="e.g. Pune, Mumbai, Bangalore"
             defaultValue={(candidate.assignedLocation as string) || ''}
-            style={{ ...dateStyle, marginTop: '0.75rem' }}
-          />
+            style={{ ...selectStyle, marginTop: '0.75rem' }}
+          >
+            <option value="">— Select Assigned City —</option>
+            {TCS_LOCATIONS.map((city) => (
+              <option key={city} value={city}>{city}</option>
+            ))}
+          </select>
         </div>
       )}
 
       {/* Location Preferences */}
       <div style={{ marginBottom: '1.5rem', borderTop: '1px solid var(--tcs-border)', paddingTop: '1.5rem' }}>
         <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--tcs-text)', marginBottom: '0.5rem' }}>Location Preferences</h3>
-        <p style={{ ...hintStyle, marginBottom: '1rem' }}>Enter the 3 location preferences you provided during the selection process (in order).</p>
+        <p style={{ ...hintStyle, marginBottom: '1rem' }}>Select the 3 location preferences you provided during the selection process (in order of priority).</p>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
           {[1, 2, 3].map((n) => (
             <div key={n}>
               <label style={{ ...labelStyle, fontSize: '0.9rem' }}>Preference {n}</label>
-              <input
-                type="text"
+              <select
                 name={`prefLocation${n}`}
                 defaultValue={(candidate[`prefLocation${n}`] as string) || ''}
-                style={dateStyle}
-                placeholder={`e.g. ${['Chennai', 'Pune', 'Hyderabad'][n - 1]}`}
-              />
+                style={selectStyle}
+              >
+                <option value="">— Select City —</option>
+                {TCS_LOCATIONS.map((city) => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
+              </select>
             </div>
           ))}
         </div>
