@@ -76,5 +76,5 @@ export const authOptions: AuthOptions = {
     strategy: 'jwt',
     maxAge: 24 * 60 * 60, // 24 hours
   },
-  secret: process.env.NEXTAUTH_SECRET || 'tcs-selects-super-secret-key-12345',
+  secret: process.env.NEXTAUTH_SECRET,
 };
